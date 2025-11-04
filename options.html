@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Text Tuner Settings</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      width: 400px;
+    }
+    h1, h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type='text'], input[type='password'], select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #language-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    #language-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px;
+      border: 1px solid #ddd;
+      margin-bottom: 5px;
+    }
+    .remove-lang {
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Text Tuner Settings</h1>
+
+  <form id="settings-form">
+    <h2>AI Provider</h2>
+    <div class="form-group">
+      <label for="provider">Active Provider</label>
+      <select id="provider">
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="deepseek">DeepSeek</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="apiKey">API Key</label>
+      <input type="password" id="apiKey" placeholder="Enter your API key">
+    </div>
+
+    <h2>Rephrasing Tone</h2>
+    <div class="form-group">
+      <label for="tone">Set Tone</label>
+      <input type="text" id="tone" placeholder="e.g., Professional and concise">
+    </div>
+
+    <h2>Translation Languages</h2>
+    <div class="form-group">
+      <label for="new-language">Add Language</label>
+      <input type="text" id="new-language" placeholder="e.g., Spanish">
+      <button type="button" id="add-language">Add</button>
+    </div>
+    <ul id="language-list"></ul>
+
+    <button type="submit">Save Settings</button>
+  </form>
+
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# Python virtual environment
+env/
+venv/
+*.pyc
+__pycache__/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Chrome extension package
+*.crx
+*.pem
+
+# Logs
+*.log
+
+# Test files
+test.html
+
+# API Keys (if any config files are added)
+config.json
+secrets.json
+.env
