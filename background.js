@@ -1,21 +1,30 @@
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log('Smartlate installed.');
+  console.log('Smartlate installed. Reason:', details.reason);
 
-  chrome.storage.sync.get(['languages', 'tone', 'provider', 'apiKey'], (data) => {
+  chrome.storage.sync.get(['languages', 'tone', 'provider', 'apiKey', 'hasSeenWelcome'], (data) => {
     updateContextMenu(data.languages || []);
-  });
 
-  // Show welcome notification on first install
-  if (details.reason === 'install') {
-    chrome.notifications.create('welcome-notification', {
-      type: 'basic',
-      iconUrl: 'icons/icon128.png',
-      title: 'Welcome to Smartlate! 👋',
-      message: 'Click here to set up your AI provider and API key to get started.',
-      priority: 2,
-      requireInteraction: true
-    });
-  }
+    // Show welcome notification on first install or if never seen before
+    if (details.reason === 'install' || !data.hasSeenWelcome) {
+      console.log('Showing welcome notification...');
+      chrome.notifications.create('welcome-notification', {
+        type: 'basic',
+        iconUrl: 'icons/icon128.png',
+        title: 'Welcome to Smartlate! 👋',
+        message: 'Click here to set up your AI provider and API key to get started.',
+        priority: 2,
+        requireInteraction: true
+      }, (notificationId) => {
+        console.log('Welcome notification created:', notificationId);
+        if (chrome.runtime.lastError) {
+          console.error('Notification error:', chrome.runtime.lastError);
+        }
+      });
+
+      // Mark that we've shown the welcome message
+      chrome.storage.sync.set({ hasSeenWelcome: true });
+    }
+  });
 });
 
 function updateContextMenu(languages) {
@@ -350,6 +359,7 @@ async function createOffscreenDocument() {
 
 // Listen for notification clicks
 chrome.notifications.onClicked.addListener((notificationId) => {
+    console.log('Notification clicked:', notificationId);
     if (notificationId === 'welcome-notification' || notificationId === 'setup-required') {
         chrome.runtime.openOptionsPage();
         chrome.notifications.clear(notificationId);
