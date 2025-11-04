@@ -2,24 +2,29 @@ chrome.runtime.onInstalled.addListener((details) => {
   console.log('Smartlate installed. Reason:', details.reason);
 
   chrome.storage.sync.get(['languages', 'tone', 'provider', 'apiKey', 'hasSeenWelcome'], (data) => {
-    updateContextMenu(data.languages || []);
-
-    // Show welcome notification on first install or if never seen before
-    if (details.reason === 'install' || !data.hasSeenWelcome) {
-      console.log('Showing welcome notification...');
-      chrome.notifications.create('welcome-notification', {
-        type: 'basic',
-        iconUrl: 'icons/icon128.png',
-        title: 'Welcome to Smartlate! 👋',
-        message: 'Click here to set up your AI provider and API key to get started.',
-        priority: 2,
-        requireInteraction: true
-      }, (notificationId) => {
-        console.log('Welcome notification created:', notificationId);
-        if (chrome.runtime.lastError) {
-          console.error('Notification error:', chrome.runtime.lastError);
-        }
+    // Set default languages on first install
+    let languages = data.languages;
+    if (details.reason === 'install' || !languages || languages.length === 0) {
+      languages = ['German', 'Spanish', 'French', 'Chinese'];
+      chrome.storage.sync.set({ languages: languages }, () => {
+        console.log('Default languages set:', languages);
       });
+    }
+
+    // Set default special instructions on first install
+    if (details.reason === 'install' || !data.tone) {
+      const defaultInstructions = 'Professional and polite, but maintain a friendly and approachable tone suitable for client communication. Keep all URLs unchanged.';
+      chrome.storage.sync.set({ tone: defaultInstructions }, () => {
+        console.log('Default instructions set');
+      });
+    }
+
+    updateContextMenu(languages || []);
+
+    // Open options page on first install or if never seen before
+    if (details.reason === 'install' || !data.hasSeenWelcome) {
+      console.log('Opening options page for setup...');
+      chrome.runtime.openOptionsPage();
 
       // Mark that we've shown the welcome message
       chrome.storage.sync.set({ hasSeenWelcome: true });
@@ -29,10 +34,10 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 function updateContextMenu(languages) {
   chrome.contextMenus.removeAll(() => {
-    // Add "English (Original)" as the first option
+    // Add "English" as the first option
     chrome.contextMenus.create({
-      id: 'lang-English (Original)',
-      title: 'English (Original)',
+      id: 'lang-English',
+      title: 'English',
       contexts: ['selection']
     });
 
@@ -70,14 +75,12 @@ async function handleTextTransformation(text, language, tab) {
     // Check if API key is configured first
     const hasApiKey = await checkApiKeyConfigured();
     if (!hasApiKey) {
-        chrome.notifications.create('setup-required', {
-            type: 'basic',
-            iconUrl: 'icons/icon48.png',
-            title: 'Setup Required',
-            message: 'Click here to configure your AI provider and API key in settings.',
-            priority: 2,
-            requireInteraction: true
-        });
+        await showErrorMessage(
+            tab,
+            'Setup Required',
+            'Please configure your AI provider and API key in the extension settings.',
+            true  // isWarning
+        );
         return;
     }
 
@@ -85,24 +88,24 @@ async function handleTextTransformation(text, language, tab) {
     showLoadingIndicator(tab);
 
     chrome.storage.sync.get(['tone'], async (data) => {
-        const tone = data.tone || 'neutral';
+        const instructions = data.tone || 'Professional and polite, but maintain a friendly and approachable tone suitable for client communication.';
 
         let prompt;
         let actionMessage;
 
-        if (language === 'English (Original)') {
-            // Just rephrase in the specified tone
-            console.log(`Rephrasing "${text}" with tone: ${tone}`);
-            prompt = `Rephrase the following text in a ${tone} tone. Return ONLY the rephrased text without quotes, explanations, or additional commentary:\n\n${text}`;
+        if (language === 'English') {
+            // Just rephrase with the special instructions
+            console.log(`Rephrasing "${text}" with instructions: ${instructions}`);
+            prompt = `Rephrase the following text with this tone/style: ${instructions}. Return ONLY the rephrased text without quotes, explanations, or additional commentary:\n\n${text}`;
             actionMessage = 'Text rephrased and copied to clipboard!';
         } else {
-            // Translate and rephrase
-            console.log(`Translating "${text}" to ${language} with tone: ${tone}`);
-            prompt = `Translate the following text to ${language}. Keep the translation as close to the original meaning as possible, maintaining the same structure and style. Apply a ${tone} tone only if it enhances clarity without changing the core message. Return ONLY the translated text without quotes, explanations, or additional commentary:\n\n${text}`;
-            actionMessage = 'Text translated, rephrased, and copied to clipboard!';
+            // Translate and apply special instructions
+            console.log(`Translating "${text}" to ${language} with instructions: ${instructions}`);
+            prompt = `Translate the following text to ${language}, keeping the translation as close to the original meaning as possible. Apply this tone/style to the translation: ${instructions}. Return ONLY the translated text without quotes, explanations, or additional commentary:\n\n${text}`;
+            actionMessage = 'Text translated and copied to clipboard!';
         }
 
-        const result = await performApiCall(prompt);
+        const result = await performApiCall(prompt, tab);
         if (result) {
             // Clean up the result - remove quotes if present
             let cleanedResult = result.trim();
@@ -111,7 +114,7 @@ async function handleTextTransformation(text, language, tab) {
                 (cleanedResult.startsWith("'") && cleanedResult.endsWith("'"))) {
                 cleanedResult = cleanedResult.slice(1, -1);
             }
-            copyToClipboardAndNotify(cleanedResult, actionMessage, tab);
+            await copyToClipboardAndNotify(cleanedResult, actionMessage, tab);
         }
     });
 }
@@ -127,6 +130,30 @@ async function showLoadingIndicator(tab) {
         });
     } catch (err) {
         console.log('Could not show loading indicator:', err);
+    }
+}
+
+async function showErrorMessage(tab, title, message, isWarning = false) {
+    try {
+        // Ensure content script is loaded
+        await ensureContentScript(tab.id);
+
+        // Show error popup
+        await chrome.tabs.sendMessage(tab.id, {
+            type: 'show-error',
+            title: title,
+            message: message,
+            isWarning: isWarning
+        });
+    } catch (err) {
+        console.log('Could not show error popup:', err);
+        // Fallback to Chrome notification if popup fails
+        chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icons/icon48.png',
+            title: title,
+            message: message
+        });
     }
 }
 
@@ -151,19 +178,19 @@ async function ensureContentScript(tabId) {
     }
 }
 
-async function performApiCall(prompt) {
+async function performApiCall(prompt, tab) {
     return new Promise((resolve) => {
         chrome.storage.sync.get(['provider', 'apiKeys'], async (data) => {
             const provider = data.provider;
             const apiKey = data.apiKeys ? data.apiKeys[provider] : null;
 
             if (!provider || !apiKey) {
-                chrome.notifications.create({
-                    type: 'basic',
-                    iconUrl: 'icons/icon48.png',
-                    title: 'Smartlate',
-                    message: 'Please configure your AI provider and API key in the settings.'
-                });
+                await showErrorMessage(
+                    tab,
+                    'API Key Required',
+                    'Please configure your AI provider and API key in the extension settings.',
+                    true
+                );
                 resolve(null);
                 return;
             }
@@ -204,12 +231,11 @@ async function performApiCall(prompt) {
                     messages: [{ role: 'user', content: prompt }]
                 };
             } else {
-                chrome.notifications.create({
-                    type: 'basic',
-                    iconUrl: 'icons/icon48.png',
-                    title: 'Smartlate',
-                    message: `Provider '${provider}' is not supported.`
-                });
+                await showErrorMessage(
+                    tab,
+                    'Unsupported Provider',
+                    `Provider '${provider}' is not supported. Please choose OpenAI, Anthropic, or DeepSeek.`
+                );
                 resolve(null);
                 return;
             }
@@ -236,16 +262,24 @@ async function performApiCall(prompt) {
 
             } catch (error) {
                 console.error('API call failed:', error);
-                let errorMessage = `An error occurred: ${error.message}`;
-                if (error.message.includes('401')) {
-                    errorMessage = 'API key is invalid or missing. Please check your settings.';
+                let errorTitle = 'Translation Error';
+                let errorMessage = 'Translation failed. Please check your settings.';
+                let isWarning = false;
+
+                if (error.message.includes('401') || error.message.includes('403')) {
+                    errorTitle = 'Invalid API Key';
+                    errorMessage = 'Your API key appears to be invalid. Please update it in settings.';
+                } else if (error.message.includes('429')) {
+                    errorTitle = 'Rate Limit';
+                    errorMessage = 'Rate limit exceeded. Please try again in a few moments.';
+                    isWarning = true;
+                } else if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+                    errorTitle = 'Network Error';
+                    errorMessage = 'Could not connect. Please check your internet connection.';
+                    isWarning = true;
                 }
-                chrome.notifications.create({
-                    type: 'basic',
-                    iconUrl: 'icons/icon48.png',
-                    title: 'Smartlate',
-                    message: errorMessage
-                });
+
+                await showErrorMessage(tab, errorTitle, errorMessage, isWarning);
                 resolve(null);
             }
         });
@@ -255,12 +289,11 @@ async function performApiCall(prompt) {
 async function copyToClipboardAndNotify(text, message, tab) {
     if (!text || text.trim() === '') {
         console.error('Attempted to copy empty or whitespace text to clipboard.');
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: 'icons/icon48.png',
-            title: 'AI Text Tuner',
-            message: 'The translation result was empty.'
-        });
+        await showErrorMessage(
+            tab,
+            'Empty Result',
+            'The translation result was empty.'
+        );
         return;
     }
 
@@ -293,25 +326,17 @@ async function copyToClipboardAndNotify(text, message, tab) {
             });
         } catch (popupErr) {
             console.log('Could not show popup:', popupErr);
-            // Fallback to notification if popup fails
-            chrome.notifications.create({
-                type: 'basic',
-                iconUrl: 'icons/icon48.png',
-                title: 'Smartlate',
-                message: message
-            });
         }
 
         // Close the offscreen document (can happen after showing popup)
         await closeOffscreenDocument();
     } catch (err) {
         console.error('Failed to copy text: ', err);
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: 'icons/icon48.png',
-            title: 'AI Text Tuner',
-            message: 'Failed to copy to clipboard: ' + err.message
-        });
+        await showErrorMessage(
+            tab,
+            'Clipboard Error',
+            'Failed to copy to clipboard: ' + err.message
+        );
     }
 }
 
@@ -356,15 +381,6 @@ async function createOffscreenDocument() {
         creating = null;
     }
 }
-
-// Listen for notification clicks
-chrome.notifications.onClicked.addListener((notificationId) => {
-    console.log('Notification clicked:', notificationId);
-    if (notificationId === 'welcome-notification' || notificationId === 'setup-required') {
-        chrome.runtime.openOptionsPage();
-        chrome.notifications.clear(notificationId);
-    }
-});
 
 // Listen for messages from the offscreen document
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

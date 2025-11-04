@@ -17,6 +17,17 @@
     line-height: 1.5;
     animation: slideInFromRight 0.3s ease-out;
     backdrop-filter: blur(10px);
+    cursor: default;
+}
+
+/* Error popup style */
+.ai-text-tuner-popup.error {
+    background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+}
+
+/* Warning popup style */
+.ai-text-tuner-popup.warning {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
 }
 
 .ai-text-tuner-popup.loading {

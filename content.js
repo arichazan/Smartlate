@@ -17,6 +17,9 @@ if (window.smartlateContentScriptLoaded) {
         } else if (message.type === 'show-popup' && message.text) {
             showPopup(message.text);
             sendResponse({ success: true });
+        } else if (message.type === 'show-error') {
+            showErrorPopup(message.title, message.message, message.isWarning);
+            sendResponse({ success: true });
         }
         return true;
     });
@@ -84,6 +87,49 @@ function showPopup(text) {
             }
         }, 300); // Wait for animation to complete
     }, 1000);
+}
+
+function showErrorPopup(title, message, isWarning = false) {
+    // Remove any existing popup
+    if (currentPopup && currentPopup.parentNode) {
+        currentPopup.remove();
+    }
+
+    // Create popup element
+    const popup = document.createElement('div');
+    popup.className = 'ai-text-tuner-popup ' + (isWarning ? 'warning' : 'error');
+
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'ai-text-tuner-popup-header';
+    const icon = isWarning ? '⚠️' : '❌';
+    header.innerHTML = `<span class="ai-text-tuner-popup-icon">${icon}</span><span>${title}</span>`;
+
+    // Create content
+    const content = document.createElement('div');
+    content.className = 'ai-text-tuner-popup-content';
+    content.textContent = message;
+
+    // Assemble popup
+    popup.appendChild(header);
+    popup.appendChild(content);
+
+    // Add to page
+    document.body.appendChild(popup);
+    currentPopup = popup;
+
+    // Auto-hide after 4 seconds (longer for errors)
+    setTimeout(() => {
+        popup.classList.add('hiding');
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.remove();
+            }
+            if (currentPopup === popup) {
+                currentPopup = null;
+            }
+        }, 300); // Wait for animation to complete
+    }, 4000);
 }
 
 } // End of if-else block to prevent duplicate injection

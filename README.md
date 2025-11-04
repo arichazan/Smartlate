@@ -39,14 +39,14 @@ A Chrome extension for smart translation and rephrasing using AI providers (Open
 1. Select any text on a webpage
 2. Right-click to open the context menu
 3. Choose a language from the menu:
-   - **English (Original)**: Rephrase in English with your chosen tone
+   - **English**: Rephrase in English with your chosen tone
    - **Other Languages**: Translate to that language AND rephrase with your tone
 4. The result is automatically copied to your clipboard
 5. Paste anywhere with `Cmd+V` (Mac) or `Ctrl+V` (Windows)
 
 ## How It Works
 
-- **English (Original)**: Only rephrases the text using the configured tone
+- **English**: Only rephrases the text using the configured tone
 - **Other Languages**: Translates to the target language AND applies the tone
 - All operations use your selected AI provider
 - Results are copied directly to clipboard for easy pasting
