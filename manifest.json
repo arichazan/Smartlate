@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "AI Text Tuner",
+  "name": "Smartlate",
   "version": "1.0",
-  "description": "Translate and rephrase selected text using configurable AI providers.",
+  "description": "Smart translation and rephrasing with AI - translate and refine text instantly.",
   "permissions": [
     "contextMenus",
     "storage",
+    "scripting",
     "notifications",
     "activeTab",
     "offscreen",

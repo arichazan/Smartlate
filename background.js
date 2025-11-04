@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('AI Text Tuner installed.');
+  console.log('Smartlate installed.');
 
   chrome.storage.sync.get(['languages', 'tone', 'provider', 'apiKey'], (data) => {
     updateContextMenu(data.languages || []);
@@ -31,11 +31,14 @@ function updateContextMenu(languages) {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId.startsWith('lang-')) {
     const language = info.menuItemId.substring('lang-'.length);
-    handleTextTransformation(info.selectionText, language);
+    handleTextTransformation(info.selectionText, language, tab);
   }
 });
 
-async function handleTextTransformation(text, language) {
+async function handleTextTransformation(text, language, tab) {
+    // Show loading popup immediately
+    showLoadingIndicator(tab);
+
     chrome.storage.sync.get(['tone'], async (data) => {
         const tone = data.tone || 'neutral';
 
@@ -45,20 +48,62 @@ async function handleTextTransformation(text, language) {
         if (language === 'English (Original)') {
             // Just rephrase in the specified tone
             console.log(`Rephrasing "${text}" with tone: ${tone}`);
-            prompt = `Rephrase the following text in a ${tone} tone: "${text}"`;
+            prompt = `Rephrase the following text in a ${tone} tone. Return ONLY the rephrased text without quotes, explanations, or additional commentary:\n\n${text}`;
             actionMessage = 'Text rephrased and copied to clipboard!';
         } else {
             // Translate and rephrase
             console.log(`Translating "${text}" to ${language} with tone: ${tone}`);
-            prompt = `Translate the following text to ${language} and rephrase it in a ${tone} tone: "${text}"`;
+            prompt = `Translate the following text to ${language}. Keep the translation as close to the original meaning as possible, maintaining the same structure and style. Apply a ${tone} tone only if it enhances clarity without changing the core message. Return ONLY the translated text without quotes, explanations, or additional commentary:\n\n${text}`;
             actionMessage = 'Text translated, rephrased, and copied to clipboard!';
         }
 
         const result = await performApiCall(prompt);
         if (result) {
-            copyToClipboardAndNotify(result, actionMessage);
+            // Clean up the result - remove quotes if present
+            let cleanedResult = result.trim();
+            // Remove surrounding quotes if they exist
+            if ((cleanedResult.startsWith('"') && cleanedResult.endsWith('"')) ||
+                (cleanedResult.startsWith("'") && cleanedResult.endsWith("'"))) {
+                cleanedResult = cleanedResult.slice(1, -1);
+            }
+            copyToClipboardAndNotify(cleanedResult, actionMessage, tab);
         }
     });
+}
+
+async function showLoadingIndicator(tab) {
+    try {
+        // Ensure content script is loaded
+        await ensureContentScript(tab.id);
+
+        // Show loading popup
+        await chrome.tabs.sendMessage(tab.id, {
+            type: 'show-loading'
+        });
+    } catch (err) {
+        console.log('Could not show loading indicator:', err);
+    }
+}
+
+async function ensureContentScript(tabId) {
+    try {
+        // Try to ping the content script
+        await chrome.tabs.sendMessage(tabId, { type: 'ping' });
+    } catch (err) {
+        // Content script not loaded, inject it
+        console.log('Injecting content script...');
+        await chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            files: ['content.js']
+        });
+        // Inject CSS as well
+        await chrome.scripting.insertCSS({
+            target: { tabId: tabId },
+            files: ['content.css']
+        });
+        // Wait a bit for the script to initialize
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
 }
 
 async function performApiCall(prompt) {
@@ -71,7 +116,7 @@ async function performApiCall(prompt) {
                 chrome.notifications.create({
                     type: 'basic',
                     iconUrl: 'icons/icon48.png',
-                    title: 'AI Text Tuner',
+                    title: 'Smartlate',
                     message: 'Please configure your AI provider and API key in the settings.'
                 });
                 resolve(null);
@@ -117,7 +162,7 @@ async function performApiCall(prompt) {
                 chrome.notifications.create({
                     type: 'basic',
                     iconUrl: 'icons/icon48.png',
-                    title: 'AI Text Tuner',
+                    title: 'Smartlate',
                     message: `Provider '${provider}' is not supported.`
                 });
                 resolve(null);
@@ -153,7 +198,7 @@ async function performApiCall(prompt) {
                 chrome.notifications.create({
                     type: 'basic',
                     iconUrl: 'icons/icon48.png',
-                    title: 'AI Text Tuner',
+                    title: 'Smartlate',
                     message: errorMessage
                 });
                 resolve(null);
@@ -162,7 +207,7 @@ async function performApiCall(prompt) {
     });
 }
 
-async function copyToClipboardAndNotify(text, message) {
+async function copyToClipboardAndNotify(text, message, tab) {
     if (!text || text.trim() === '') {
         console.error('Attempted to copy empty or whitespace text to clipboard.');
         chrome.notifications.create({
@@ -192,18 +237,28 @@ async function copyToClipboardAndNotify(text, message) {
             );
         });
 
-        // Wait a bit to ensure clipboard write completes
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Show visual popup on the page immediately after copy
+        try {
+            // Ensure content script is loaded
+            await ensureContentScript(tab.id);
 
-        // Close the offscreen document
+            await chrome.tabs.sendMessage(tab.id, {
+                type: 'show-popup',
+                text: text
+            });
+        } catch (popupErr) {
+            console.log('Could not show popup:', popupErr);
+            // Fallback to notification if popup fails
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icons/icon48.png',
+                title: 'Smartlate',
+                message: message
+            });
+        }
+
+        // Close the offscreen document (can happen after showing popup)
         await closeOffscreenDocument();
-
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: 'icons/icon48.png',
-            title: 'AI Text Tuner',
-            message: message
-        });
     } catch (err) {
         console.error('Failed to copy text: ', err);
         chrome.notifications.create({

@@ -1,6 +1,6 @@
-# AI Text Tuner
+# Smartlate
 
-A Chrome extension that translates and rephrases selected text using AI providers (OpenAI, Anthropic, or DeepSeek).
+A Chrome extension for smart translation and rephrasing using AI providers (OpenAI, Anthropic, or DeepSeek).
 
 ## Features
 
