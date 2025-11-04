@@ -1,9 +1,21 @@
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   console.log('Smartlate installed.');
 
   chrome.storage.sync.get(['languages', 'tone', 'provider', 'apiKey'], (data) => {
     updateContextMenu(data.languages || []);
   });
+
+  // Show welcome notification on first install
+  if (details.reason === 'install') {
+    chrome.notifications.create('welcome-notification', {
+      type: 'basic',
+      iconUrl: 'icons/icon128.png',
+      title: 'Welcome to Smartlate! 👋',
+      message: 'Click here to set up your AI provider and API key to get started.',
+      priority: 2,
+      requireInteraction: true
+    });
+  }
 });
 
 function updateContextMenu(languages) {
@@ -35,7 +47,31 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
+async function checkApiKeyConfigured() {
+    return new Promise((resolve) => {
+        chrome.storage.sync.get(['provider', 'apiKeys'], (data) => {
+            const provider = data.provider;
+            const apiKey = data.apiKeys ? data.apiKeys[provider] : null;
+            resolve(provider && apiKey && apiKey.trim().length > 0);
+        });
+    });
+}
+
 async function handleTextTransformation(text, language, tab) {
+    // Check if API key is configured first
+    const hasApiKey = await checkApiKeyConfigured();
+    if (!hasApiKey) {
+        chrome.notifications.create('setup-required', {
+            type: 'basic',
+            iconUrl: 'icons/icon48.png',
+            title: 'Setup Required',
+            message: 'Click here to configure your AI provider and API key in settings.',
+            priority: 2,
+            requireInteraction: true
+        });
+        return;
+    }
+
     // Show loading popup immediately
     showLoadingIndicator(tab);
 
@@ -311,6 +347,14 @@ async function createOffscreenDocument() {
         creating = null;
     }
 }
+
+// Listen for notification clicks
+chrome.notifications.onClicked.addListener((notificationId) => {
+    if (notificationId === 'welcome-notification' || notificationId === 'setup-required') {
+        chrome.runtime.openOptionsPage();
+        chrome.notifications.clear(notificationId);
+    }
+});
 
 // Listen for messages from the offscreen document
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

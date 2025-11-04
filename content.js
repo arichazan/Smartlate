@@ -1,17 +1,25 @@
-// Store reference to current popup
-let currentPopup = null;
+// Prevent duplicate injection
+if (window.smartlateContentScriptLoaded) {
+    console.log('Smartlate content script already loaded, skipping...');
+} else {
+    window.smartlateContentScriptLoaded = true;
 
-// Listen for messages from the background script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'show-loading') {
-        showLoadingPopup();
-        sendResponse({ success: true });
-    } else if (message.type === 'show-popup' && message.text) {
-        showPopup(message.text);
-        sendResponse({ success: true });
-    }
-    return true;
-});
+    // Store reference to current popup
+    let currentPopup = null;
+
+    // Listen for messages from the background script
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.type === 'ping') {
+            sendResponse({ success: true });
+        } else if (message.type === 'show-loading') {
+            showLoadingPopup();
+            sendResponse({ success: true });
+        } else if (message.type === 'show-popup' && message.text) {
+            showPopup(message.text);
+            sendResponse({ success: true });
+        }
+        return true;
+    });
 
 function showLoadingPopup() {
     // Remove any existing popup
@@ -64,7 +72,7 @@ function showPopup(text) {
     document.body.appendChild(popup);
     currentPopup = popup;
 
-    // Auto-hide after 3 seconds
+    // Auto-hide after 1 second
     setTimeout(() => {
         popup.classList.add('hiding');
         setTimeout(() => {
@@ -75,5 +83,7 @@ function showPopup(text) {
                 currentPopup = null;
             }
         }, 300); // Wait for animation to complete
-    }, 3000);
+    }, 1000);
 }
+
+} // End of if-else block to prevent duplicate injection
