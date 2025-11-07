@@ -25,13 +25,16 @@
 
 ### 3. Extension Package
 - [x] Version updated to 1.0.0 in manifest.json
-- [x] Production ZIP created: `chrome-store-submission/smartlate-1.0.0.zip`
+- [x] Build script created: `build.sh`
+- [ ] Run `./build.sh` to create production ZIP
 - [ ] Test the ZIP by loading it in Chrome:
   - Go to `chrome://extensions/`
   - Enable Developer Mode
   - Click "Load unpacked"
   - Extract the ZIP and load the folder
   - Test all features work
+
+**Note**: Always use the build script to create the ZIP file for submission. This ensures only necessary files are included.
 
 ---
 

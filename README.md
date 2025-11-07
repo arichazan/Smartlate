@@ -70,18 +70,30 @@ A Chrome extension for smart translation and rephrasing using AI providers (Open
 
 Built with Chrome Extension Manifest V3
 
+### Building for Production
+
+To create a production-ready ZIP file for Chrome Web Store submission:
+
+```bash
+./build.sh
+```
+
+This will create `chrome-store-submission/smartlate-[version].zip` with only the necessary extension files.
+
 ### File Structure
 
 ```
 ├── manifest.json          # Extension configuration
 ├── background.js          # Service worker handling translation logic
-├── content.js             # Content script (not currently used)
+├── content.js             # Content script for page interaction
+├── content.css            # Styles for content script
 ├── offscreen.js           # Offscreen document for clipboard access
 ├── offscreen.html         # Offscreen document HTML
 ├── options.html           # Settings page
 ├── options.js             # Settings page logic
 ├── popup.html             # Extension popup
 ├── popup.js               # Extension popup logic
+├── build.sh               # Build script for packaging
 └── icons/                 # Extension icons
     ├── icon16.png
     ├── icon48.png
