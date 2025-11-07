@@ -24,14 +24,25 @@ document.addEventListener('DOMContentLoaded', () => {
       languages = data.languages;
       renderLanguages();
     }
+    // Initialize API key instructions display
+    updateApiKeyInstructions();
   });
 });
+
+// Update API key instructions based on selected provider
+function updateApiKeyInstructions() {
+    const provider = providerSelect.value;
+    document.getElementById('openai-instructions').style.display = provider === 'openai' ? 'list-item' : 'none';
+    document.getElementById('anthropic-instructions').style.display = provider === 'anthropic' ? 'list-item' : 'none';
+    document.getElementById('deepseek-instructions').style.display = provider === 'deepseek' ? 'list-item' : 'none';
+}
 
 providerSelect.addEventListener('change', () => {
     chrome.storage.sync.get(['apiKeys'], (data) => {
         const apiKeys = data.apiKeys || {};
         apiKeyInput.value = apiKeys[providerSelect.value] || '';
     });
+    updateApiKeyInstructions();
 });
 
 // Render languages

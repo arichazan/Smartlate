@@ -66,9 +66,18 @@
         <option value="deepseek">DeepSeek</option>
       </select>
     </div>
+
     <div class="form-group">
       <label for="apiKey">API Key</label>
       <input type="password" id="apiKey" placeholder="Enter your API key">
+      <div id="api-key-instructions" style="margin-top: 10px; font-size: 13px; color: #666;">
+        <strong>How to get an API key:</strong>
+        <ul style="margin: 5px 0; padding-left: 20px;">
+          <li id="openai-instructions"><a href="https://platform.openai.com/api-keys" target="_blank">Instructions for OpenAI</a></li>
+          <li id="anthropic-instructions" style="display: none;"><a href="https://console.anthropic.com/settings/keys" target="_blank">Instructions for Anthropic (Claude)</a></li>
+          <li id="deepseek-instructions" style="display: none;"><a href="https://platform.deepseek.com/api_keys" target="_blank">Instructions for DeepSeek</a></li>
+        </ul>
+      </div>
     </div>
 
     <h2>Special Instructions</h2>

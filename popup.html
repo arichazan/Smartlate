@@ -5,20 +5,67 @@
   <style>
     body {
       font-family: sans-serif;
-      width: 200px;
+      width: 250px;
+      padding: 15px;
+    }
+    h3 {
+      margin-top: 0;
       text-align: center;
+    }
+    .message {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+    .warning {
+      background-color: #fff3cd;
+      border: 1px solid #ffc107;
       padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .warning-icon {
+      font-size: 20px;
+      margin-right: 5px;
     }
     a {
       color: #007bff;
       cursor: pointer;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .settings-link {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+    }
+    .settings-link:hover {
+      background-color: #0056b3;
+      text-decoration: none;
+    }
+    #normal-message {
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <h3>Smartlate</h3>
-  <p>Select text on a page and right-click to translate or rephrase.</p>
-  <a id="go-to-options">Go to Settings</a>
+
+  <div id="warning-message" class="warning" style="display: none;">
+    <div><span class="warning-icon">⚠️</span><strong>No API Key Configured</strong></div>
+    <p style="margin: 8px 0 0 0; font-size: 14px;">Please go to Settings to add an API key for your chosen provider.</p>
+  </div>
+
+  <div id="normal-message" class="message">
+    <p>Select text on a page and right-click to translate or rephrase.</p>
+  </div>
+
+  <a id="go-to-options" class="settings-link">Go to Settings</a>
   <script src="popup.js"></script>
 </body>
 </html>
