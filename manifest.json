@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Smartlate",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Smart translation and rephrasing with AI - translate and refine text instantly.",
   "permissions": [
     "contextMenus",
