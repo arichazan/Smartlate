@@ -1,4 +1,4 @@
-# Smartlate
+# Phravexa
 
 A Chrome extension for smart translation and rephrasing using AI providers (OpenAI, Anthropic, or DeepSeek).
 
@@ -78,7 +78,7 @@ To create a production-ready ZIP file for Chrome Web Store submission:
 ./build.sh
 ```
 
-This will create `chrome-store-submission/smartlate-[version].zip` with only the necessary extension files.
+This will create `chrome-store-submission/phravexa-[version].zip` with only the necessary extension files.
 
 ### File Structure
 
