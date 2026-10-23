@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Smartlate Extension Build Script
+# Phravexa Extension Build Script
 # Creates a production-ready ZIP file for Chrome Web Store submission
 
 set -e  # Exit on any error
@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}Building Smartlate Extension...${NC}"
+echo -e "${BLUE}Building Phravexa Extension...${NC}"
 
 # Get version from manifest.json
 VERSION=$(grep -o '"version": "[^"]*"' manifest.json | cut -d'"' -f4)
@@ -19,8 +19,8 @@ echo -e "${BLUE}Version: ${VERSION}${NC}"
 
 # Create build directory
 BUILD_DIR="build"
-DIST_DIR="chrome-store-submission"
-ZIP_NAME="smartlate-${VERSION}.zip"
+DIST_DIR="../chrome-store-submission"
+ZIP_NAME="phravexa-${VERSION}.zip"
 
 echo -e "${BLUE}Creating build directory...${NC}"
 rm -rf "${BUILD_DIR}"

@@ -55,7 +55,7 @@ Take screenshots that demonstrate your extension's features:
 
 **Design Suggestions:**
 - Use your extension icon as the focal point
-- Add the text "Smartlate" prominently
+- Add the text "Phravexa" prominently
 - Include tagline: "Smart AI Translation & Rephrasing"
 - Use a clean, professional background
 - Consider showing a visual metaphor (globe, languages, AI symbols)

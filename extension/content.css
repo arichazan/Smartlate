@@ -1,4 +1,4 @@
-/* Smartlate - Popup notification styles */
+/* Phravexa - Popup notification styles */
 
 .ai-text-tuner-popup {
     position: fixed;
@@ -64,6 +64,7 @@
     max-height: 200px;
     overflow-y: auto;
     word-wrap: break-word;
+    white-space: pre-wrap;
     line-height: 1.6;
 }
 

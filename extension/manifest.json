@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "AI Translate & Rephrase - Phravexa",
+  "version": "1.1.0",
+  "description": "Translate and refine text in any edit box instantly. Add as many languages as you want. Customize the prompt to match your style.",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "scripting",
+    "notifications",
+    "activeTab",
+    "offscreen",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*",
+    "https://api.deepseek.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

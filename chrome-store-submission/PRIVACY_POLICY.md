@@ -1,10 +1,10 @@
-# Privacy Policy for Smartlate
+# Privacy Policy for Phravexa
 
 **Last Updated:** November 5, 2024
 
 ## Overview
 
-Smartlate ("the Extension") is committed to protecting your privacy. This privacy policy explains how we handle your data.
+Phravexa ("the Extension") is committed to protecting your privacy. This privacy policy explains how we handle your data.
 
 ## Data Collection
 
@@ -88,4 +88,4 @@ support@itbcn.com
 
 ## Consent
 
-By using the Smartlate Extension, you consent to this privacy policy.
+By using the Phravexa Extension, you consent to this privacy policy.

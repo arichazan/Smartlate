@@ -19,7 +19,7 @@
 **Quick Options for Hosting:**
 - **GitHub**: Create a repo, enable GitHub Pages, commit PRIVACY_POLICY.md
 - **Google Docs**: Upload, set sharing to "Anyone with the link can view"
-- **Your website**: Host at yoursite.com/smartlate-privacy
+- **Your website**: Host at yoursite.com/phravexa-privacy
 
 ---
 
@@ -90,7 +90,7 @@ You'll need to explain why your extension needs each permission. Here are sugges
 
 Chrome requires extensions to have a clear single purpose. Here's your justification:
 
-> **Single Purpose:** Smartlate provides AI-powered translation and text rephrasing functionality. Users can select text on any webpage and translate it to their configured target languages while applying a preferred writing tone (professional, casual, concise, etc.). All features serve this single purpose of helping users translate and refine text using AI.
+> **Single Purpose:** Phravexa provides AI-powered translation and text rephrasing functionality. Users can select text on any webpage and translate it to their configured target languages while applying a preferred writing tone (professional, casual, concise, etc.). All features serve this single purpose of helping users translate and refine text using AI.
 
 ---
 
@@ -99,7 +99,7 @@ Chrome requires extensions to have a clear single purpose. Here's your justifica
 ### Step 1: Upload Extension
 1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Click "New Item"
-3. Upload `chrome-store-submission/smartlate-1.0.0.zip`
+3. Upload `chrome-store-submission/phravexa-1.0.0.zip`
 4. Wait for the upload to complete
 
 ### Step 2: Store Listing Tab
@@ -118,7 +118,7 @@ Fill in the following information:
 
 **Additional Fields:**
 - [ ] Official URL (optional): Your website or GitHub repo
-- [ ] Homepage URL (optional): https://github.com/yourusername/smartlate
+- [ ] Homepage URL (optional): https://github.com/yourusername/phravexa
 
 ### Step 3: Privacy Practices Tab
 

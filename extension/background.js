@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log('Smartlate installed. Reason:', details.reason);
+  console.log('Phravexa installed. Reason:', details.reason);
 
   chrome.storage.sync.get(['languages', 'tone', 'provider', 'apiKey', 'hasSeenWelcome'], (data) => {
     // Set default languages on first install
@@ -57,9 +57,87 @@ function updateContextMenu(languages) {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId.startsWith('lang-')) {
     const language = info.menuItemId.substring('lang-'.length);
-    handleTextTransformation(info.selectionText, language, tab);
+    getSelection(info, tab).then(selection => handleTextTransformation(selection, language, tab));
   }
 });
+
+// info.selectionText collapses line breaks and drops all markup, so read the
+// selection directly from the page: plain text for inputs, HTML for page content.
+async function getSelection(info, tab) {
+    try {
+        const [injection] = await chrome.scripting.executeScript({
+            target: { tabId: tab.id, frameIds: [info.frameId || 0] },
+            func: () => {
+                const el = document.activeElement;
+                try {
+                    if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
+                        typeof el.selectionStart === 'number' && el.selectionEnd > el.selectionStart) {
+                        return { text: el.value.substring(el.selectionStart, el.selectionEnd), html: null };
+                    }
+                } catch (e) {
+                    // Some input types don't support selection, fall through
+                }
+
+                const selection = window.getSelection();
+                const text = selection.toString();
+                if (selection.rangeCount === 0) {
+                    return { text, html: null };
+                }
+
+                const container = document.createElement('div');
+                for (let i = 0; i < selection.rangeCount; i++) {
+                    const range = selection.getRangeAt(i);
+                    let fragment = range.cloneContents();
+
+                    // Keep formatting elements that wrap the whole selection (e.g. selecting
+                    // text inside a single <b>, <a> or <li>), like the browser's own copy does
+                    const wrapperTags = ['B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'DEL', 'INS', 'MARK',
+                        'SUB', 'SUP', 'SMALL', 'A', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+                        'LI', 'UL', 'OL', 'BLOCKQUOTE', 'FONT', 'SPAN'];
+                    let ancestor = range.commonAncestorContainer;
+                    if (ancestor.nodeType !== Node.ELEMENT_NODE) {
+                        ancestor = ancestor.parentElement;
+                    }
+                    while (ancestor && wrapperTags.includes(ancestor.tagName)) {
+                        const wrapper = ancestor.cloneNode(false);
+                        wrapper.appendChild(fragment);
+                        fragment = wrapper;
+                        ancestor = ancestor.parentElement;
+                    }
+                    container.appendChild(fragment);
+                }
+
+                // Drop non-content elements and attributes that only bloat the prompt
+                container.querySelectorAll('script, style, noscript, template, link, meta').forEach(n => n.remove());
+                const keepAttributes = ['href', 'src', 'alt', 'title', 'style', 'colspan', 'rowspan', 'start', 'type', 'width', 'height'];
+                container.querySelectorAll('*').forEach(node => {
+                    [...node.attributes].forEach(attr => {
+                        if (!keepAttributes.includes(attr.name)) {
+                            node.removeAttribute(attr.name);
+                        }
+                    });
+                    // Make links and images absolute so they still work when pasted elsewhere
+                    if (node.hasAttribute('href')) {
+                        try { node.setAttribute('href', new URL(node.getAttribute('href'), document.baseURI).href); } catch (e) {}
+                    }
+                    if (node.hasAttribute('src')) {
+                        try { node.setAttribute('src', new URL(node.getAttribute('src'), document.baseURI).href); } catch (e) {}
+                    }
+                });
+
+                // A selection without any markup is just plain text
+                const html = container.querySelector('*') ? container.innerHTML : null;
+                return { text, html };
+            }
+        });
+        if (injection && injection.result && injection.result.text && injection.result.text.trim()) {
+            return injection.result;
+        }
+    } catch (err) {
+        console.log('Could not read formatted selection, using plain selection text:', err);
+    }
+    return { text: info.selectionText, html: null };
+}
 
 async function checkApiKeyConfigured() {
     return new Promise((resolve) => {
@@ -71,7 +149,7 @@ async function checkApiKeyConfigured() {
     });
 }
 
-async function handleTextTransformation(text, language, tab) {
+async function handleTextTransformation(selection, language, tab) {
     // Check if API key is configured first
     const hasApiKey = await checkApiKeyConfigured();
     if (!hasApiKey) {
@@ -89,31 +167,41 @@ async function handleTextTransformation(text, language, tab) {
 
     chrome.storage.sync.get(['tone'], async (data) => {
         const instructions = data.tone || 'Professional and polite, but maintain a friendly and approachable tone suitable for client communication.';
+        const isHtml = Boolean(selection.html);
+        const input = isHtml ? selection.html : selection.text;
+
+        const task = language === 'English'
+            ? `Rephrase the following ${isHtml ? 'HTML' : 'text'} with this tone/style: ${instructions}.`
+            : `Translate the following ${isHtml ? 'HTML' : 'text'} to ${language}, keeping the translation as close to the original meaning as possible. Apply this tone/style to the translation: ${instructions}.`;
+        const resultName = language === 'English' ? 'rephrased' : 'translated';
 
         let prompt;
-        let actionMessage;
-
-        if (language === 'English') {
-            // Just rephrase with the special instructions
-            console.log(`Rephrasing "${text}" with instructions: ${instructions}`);
-            prompt = `Rephrase the following text with this tone/style: ${instructions}. Return ONLY the rephrased text without quotes, explanations, or additional commentary:\n\n${text}`;
-            actionMessage = 'Text rephrased and copied to clipboard!';
+        if (isHtml) {
+            prompt = `${task} Change ONLY the human-readable text. Preserve the HTML structure exactly: keep every tag, attribute, link URL, inline style, list, table, line break (<br>), heading and bold/italic/underline formatting in the same places as the original. Do not add, remove, merge or reorder elements, and do not wrap the result in <html>, <body> or code fences. Return ONLY the ${resultName} HTML without explanations or additional commentary:\n\n${input}`;
         } else {
-            // Translate and apply special instructions
-            console.log(`Translating "${text}" to ${language} with instructions: ${instructions}`);
-            prompt = `Translate the following text to ${language}, keeping the translation as close to the original meaning as possible. Apply this tone/style to the translation: ${instructions}. Return ONLY the translated text without quotes, explanations, or additional commentary:\n\n${text}`;
-            actionMessage = 'Text translated and copied to clipboard!';
+            prompt = `${task} Preserve the original formatting exactly: keep every line break, blank line, paragraph break, indentation, list/bullet marker, markdown syntax and spacing in the same places as the original. Do not merge or split lines. Return ONLY the ${resultName} text without quotes, explanations, or additional commentary:\n\n${input}`;
         }
+        const actionMessage = `Text ${resultName} and copied to clipboard!`;
+        console.log(`${language === 'English' ? 'Rephrasing' : `Translating to ${language}`} "${input}" with instructions: ${instructions}`);
 
         const result = await performApiCall(prompt, tab);
         if (result) {
-            // Clean up the result - remove quotes if present
             let cleanedResult = result.trim();
+            if (isHtml) {
+                // Remove a markdown code fence if the model added one
+                cleanedResult = cleanedResult.replace(/^```(?:html)?\s*\n?/i, '').replace(/\n?```$/, '').trim();
+                await copyToClipboardAndNotify(null, actionMessage, tab, cleanedResult);
+                return;
+            }
             // Remove surrounding quotes if they exist
             if ((cleanedResult.startsWith('"') && cleanedResult.endsWith('"')) ||
                 (cleanedResult.startsWith("'") && cleanedResult.endsWith("'"))) {
                 cleanedResult = cleanedResult.slice(1, -1);
             }
+            // Restore leading/trailing whitespace (e.g. trailing newlines) from the original
+            const leading = input.match(/^\s*/)[0];
+            const trailing = input.match(/\s*$/)[0];
+            cleanedResult = leading + cleanedResult + trailing;
             await copyToClipboardAndNotify(cleanedResult, actionMessage, tab);
         }
     });
@@ -286,8 +374,8 @@ async function performApiCall(prompt, tab) {
     });
 }
 
-async function copyToClipboardAndNotify(text, message, tab) {
-    if (!text || text.trim() === '') {
+async function copyToClipboardAndNotify(text, message, tab, html = null) {
+    if ((!text || text.trim() === '') && (!html || html.trim() === '')) {
         console.error('Attempted to copy empty or whitespace text to clipboard.');
         await showErrorMessage(
             tab,
@@ -304,7 +392,7 @@ async function copyToClipboardAndNotify(text, message, tab) {
         // Send message and wait for response
         const response = await new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(
-                { type: 'copy-to-clipboard', target: 'offscreen', data: text },
+                { type: 'copy-to-clipboard', target: 'offscreen', data: text, html: html },
                 (response) => {
                     if (chrome.runtime.lastError) {
                         reject(chrome.runtime.lastError);
@@ -315,6 +403,10 @@ async function copyToClipboardAndNotify(text, message, tab) {
             );
         });
 
+        if (response && response.success === false) {
+            throw new Error(response.error || 'Unknown clipboard error');
+        }
+
         // Show visual popup on the page immediately after copy
         try {
             // Ensure content script is loaded
@@ -322,7 +414,8 @@ async function copyToClipboardAndNotify(text, message, tab) {
 
             await chrome.tabs.sendMessage(tab.id, {
                 type: 'show-popup',
-                text: text
+                // The offscreen document returns the plain-text version of copied HTML
+                text: (response && response.text) || text
             });
         } catch (popupErr) {
             console.log('Could not show popup:', popupErr);

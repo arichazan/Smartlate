@@ -7,8 +7,8 @@
 - ✅ Account already created
 
 ### 2. Extension Package
-- ✅ **File**: `smartlate-1.0.0.zip` (20KB)
-- ✅ Location: `chrome-store-submission/smartlate-1.0.0.zip`
+- ✅ **File**: `phravexa-1.0.0.zip` (20KB)
+- ✅ Location: `chrome-store-submission/phravexa-1.0.0.zip`
 
 ### 3. Visual Assets
 - ✅ **Screenshots** (4 images):
@@ -21,7 +21,7 @@
 - ✅ **Large Promo Tile** (920x680): `920x680.png`
 
 ### 4. Privacy Policy
-- ✅ **URL**: https://arichazan.github.io/Smartlate/PRIVACY
+- ✅ **URL**: https://arichazan.github.io/Phravexa/PRIVACY
 - ✅ Contact email: support@itbcn.com
 
 ### 5. Store Listing Content
@@ -40,7 +40,7 @@
 
 ### Step 2: Upload Extension
 1. Click **"Choose file"**
-2. Select: `chrome-store-submission/smartlate-1.0.0.zip`
+2. Select: `chrome-store-submission/phravexa-1.0.0.zip`
 3. Click **"Upload"**
 4. Wait for upload to complete
 
@@ -86,7 +86,7 @@ Copy from `STORE_LISTING.md` - the full detailed description section
 
 **Privacy Policy URL:**
 ```
-https://arichazan.github.io/Smartlate/PRIVACY
+https://arichazan.github.io/Phravexa/PRIVACY
 ```
 
 **Data Usage - What data is collected:**
@@ -158,7 +158,7 @@ Required to communicate with AI service providers (OpenAI, Anthropic Claude, or 
 When asked about your extension's single purpose:
 
 ```
-Smartlate provides AI-powered translation and text rephrasing functionality. Users can select text on any webpage and translate it to their configured target languages while applying a preferred writing tone (professional, casual, concise, etc.). All features serve this single purpose of helping users translate and refine text using AI.
+Phravexa provides AI-powered translation and text rephrasing functionality. Users can select text on any webpage and translate it to their configured target languages while applying a preferred writing tone (professional, casual, concise, etc.). All features serve this single purpose of helping users translate and refine text using AI.
 ```
 
 ---
@@ -196,7 +196,7 @@ Smartlate provides AI-powered translation and text rephrasing functionality. Use
 ## 📞 If You Have Issues
 
 **Common Issues:**
-- **Privacy Policy URL not accessible:** Make sure https://arichazan.github.io/Smartlate/PRIVACY loads
+- **Privacy Policy URL not accessible:** Make sure https://arichazan.github.io/Phravexa/PRIVACY loads
 - **Screenshots wrong size:** They should be 1280x800 or 640x400 (yours are fine)
 - **Permission questions:** Use the justifications above
 
@@ -212,19 +212,19 @@ Your extension will be available at:
 https://chrome.google.com/webstore/detail/[your-extension-id]
 ```
 
-Share this link with users to install Smartlate!
+Share this link with users to install Phravexa!
 
 ---
 
 ## Quick Reference Files
 
 All files you need are in `chrome-store-submission/`:
-- ✅ `smartlate-1.0.0.zip` - Upload this
+- ✅ `phravexa-1.0.0.zip` - Upload this
 - ✅ `440x280.png` - Small promo tile
 - ✅ `920x680.png` - Large promo tile
 - ✅ `screenshots/` - All 4 screenshots
 - ✅ `STORE_LISTING.md` - Copy descriptions from here
-- ✅ Privacy Policy URL: https://arichazan.github.io/Smartlate/PRIVACY
+- ✅ Privacy Policy URL: https://arichazan.github.io/Phravexa/PRIVACY
 
 ---
 

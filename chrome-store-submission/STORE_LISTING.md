@@ -1,7 +1,7 @@
 # Chrome Web Store Listing Content
 
 ## Extension Name
-Smartlate
+AI Translate & Rephrase - Phravexa
 
 ## Short Description (132 characters max)
 Smart AI-powered translation and text rephrasing - translate to any language and refine tone instantly with OpenAI, Claude, or DeepSeek
@@ -10,7 +10,7 @@ Smart AI-powered translation and text rephrasing - translate to any language and
 
 ## Detailed Description
 
-Transform your text with AI-powered translation and rephrasing. Smartlate makes it effortless to translate selected text into any language while applying the perfect tone for your audience.
+Transform your text with AI-powered translation and rephrasing. Phravexa makes it effortless to translate selected text into any language while applying the perfect tone for your audience.
 
 **Key Features:**
 
@@ -29,6 +29,9 @@ Choose your preferred AI service:
 - OpenAI (GPT models)
 - Anthropic (Claude)
 - DeepSeek
+
+📝 **Keeps Your Formatting**
+Bold, italics, links, headings, lists, tables and line breaks are preserved - paste the translation straight into Gmail, Google Docs, Word or Slack and it looks just like the original.
 
 ⚡ **One-Click Operation**
 1. Select any text on any webpage

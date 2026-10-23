@@ -1,8 +1,8 @@
 // Prevent duplicate injection
-if (window.smartlateContentScriptLoaded) {
-    console.log('Smartlate content script already loaded, skipping...');
+if (window.phravexaContentScriptLoaded) {
+    console.log('Phravexa content script already loaded, skipping...');
 } else {
-    window.smartlateContentScriptLoaded = true;
+    window.phravexaContentScriptLoaded = true;
 
     // Store reference to current popup
     let currentPopup = null;
