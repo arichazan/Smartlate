@@ -4,11 +4,13 @@
 AI Translate & Rephrase - Phravexa
 
 ## Short Description (132 characters max)
-Smart AI-powered translation and text rephrasing - translate to any language and refine tone instantly with OpenAI, Claude, or DeepSeek
+Instantly translate and refine text in any text box. Add unlimited languages and customize prompts to match your tone and style.
 
-(Characters: 132/132)
+(Characters: 128/132)
 
 ## Detailed Description
+
+Instantly translate and improve your writing in any text box. Make your text clearer, more natural, and better suited to your tone. Add as many languages as you like and customize prompts to match your writing style.
 
 Transform your text with AI-powered translation and rephrasing. Phravexa makes it effortless to translate selected text into any language while applying the perfect tone for your audience.
 
