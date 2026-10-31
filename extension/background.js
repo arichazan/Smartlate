@@ -1,9 +1,9 @@
 importScripts('lib/core.js');
 
 const {
-  SmartlateError, PROVIDERS, buildPrompt, buildRequest, parseResponse, cleanResult,
+  PhravexaError, PROVIDERS, buildPrompt, buildRequest, parseResponse, cleanResult,
   classifyHttpError, classifyNetworkError, validateSelection, normalizeLanguages, isRephrase
-} = self.SmartlateCore;
+} = self.PhravexaCore;
 
 const DEFAULT_LANGUAGES = ['German', 'Spanish', 'French', 'Chinese'];
 const DEFAULT_TONE = 'Professional and polite, but maintain a friendly and approachable tone suitable for client communication. Keep all URLs unchanged.';
@@ -61,7 +61,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       chrome.runtime.openOptionsPage();
     }
   } catch (err) {
-    console.error('Smartlate setup failed:', err);
+    console.error('Phravexa setup failed:', err);
   }
 });
 
@@ -105,7 +105,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   getSelection(info, tab)
     .then(selection => handleTextTransformation(selection, language, tab))
     .catch(err => {
-      console.error('Smartlate failed:', err);
+      console.error('Phravexa failed:', err);
       showErrorMessage(tab, 'Unexpected Error', 'Something went wrong. Please try again.');
     });
 });
@@ -218,7 +218,7 @@ async function handleTextTransformation(selection, language, tab) {
 
     const settings = await getSettings();
     if (!settings.apiKey) {
-      throw new SmartlateError('Setup Required', 'Add your AI provider and API key in Smartlate settings (click the extension icon).', { isWarning: true, code: 'no_key' });
+      throw new PhravexaError('Setup Required', 'Add your AI provider and API key in Phravexa settings (click the extension icon).', { isWarning: true, code: 'no_key' });
     }
 
     showLoadingIndicator(tab, isRephrase(language) ? 'Rephrasing' : `Translating to ${language}`);
@@ -240,10 +240,10 @@ async function handleTextTransformation(selection, language, tab) {
       truncated: raw.truncated
     });
   } catch (err) {
-    if (err instanceof SmartlateError) {
+    if (err instanceof PhravexaError) {
       await showErrorMessage(tab, err.title, err.message, err.isWarning);
     } else {
-      console.error('Smartlate failed:', err);
+      console.error('Phravexa failed:', err);
       await showErrorMessage(tab, 'Unexpected Error', 'Something went wrong. Please try again.');
     }
   }
@@ -279,7 +279,7 @@ async function callProvider(settings, prompt) {
   try {
     json = await response.json();
   } catch (err) {
-    throw new SmartlateError('Unexpected Response', `${label} returned an unreadable response. Please try again.`, { code: 'bad_response' });
+    throw new PhravexaError('Unexpected Response', `${label} returned an unreadable response. Please try again.`, { code: 'bad_response' });
   }
   return parseResponse(settings.provider, json);
 }
@@ -355,7 +355,7 @@ function writeClipboard(text, html) {
 
 async function copyToClipboardAndNotify(tab, { text, html, message, truncated }) {
   if ((!text || !text.trim()) && (!html || !html.trim())) {
-    throw new SmartlateError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
+    throw new PhravexaError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
   }
 
   let response;
@@ -363,13 +363,13 @@ async function copyToClipboardAndNotify(tab, { text, html, message, truncated })
     response = await writeClipboard(text, html);
   } catch (err) {
     console.error('Clipboard write failed:', err);
-    throw new SmartlateError('Clipboard Error', 'Could not copy the result to the clipboard. Please try again.', { code: 'clipboard' });
+    throw new PhravexaError('Clipboard Error', 'Could not copy the result to the clipboard. Please try again.', { code: 'clipboard' });
   }
 
   const preview = (response && response.text) || text || '';
   const shown = await sendToPage(tab, { type: 'show-popup', text: preview, truncated: Boolean(truncated) });
   if (!shown) {
-    notify('Smartlate', `${message}.${truncated ? ' The result may be cut short.' : ''}`);
+    notify('Phravexa', `${message}.${truncated ? ' The result may be cut short.' : ''}`);
   }
 }
 

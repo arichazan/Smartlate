@@ -1,4 +1,4 @@
-// Smartlate core logic: prompt building, provider requests, response parsing,
+// Phravexa core logic: prompt building, provider requests, response parsing,
 // result cleanup and error classification. Pure functions with no Chrome API
 // calls, so they can be unit-tested in Node and loaded in the service worker
 // via importScripts().
@@ -31,10 +31,10 @@
   // Selections larger than this are rejected before calling the provider
   const MAX_INPUT_CHARS = 30000;
 
-  class SmartlateError extends Error {
+  class PhravexaError extends Error {
     constructor(title, message, { isWarning = false, code = 'unknown' } = {}) {
       super(message);
-      this.name = 'SmartlateError';
+      this.name = 'PhravexaError';
       this.title = title;
       this.isWarning = isWarning;
       this.code = code;
@@ -73,7 +73,7 @@
   function buildRequest({ provider, apiKey, prompt, model }) {
     const config = PROVIDERS[provider];
     if (!config) {
-      throw new SmartlateError(
+      throw new PhravexaError(
         'Unsupported Provider',
         `Provider '${provider}' is not supported. Please choose OpenAI, Anthropic or DeepSeek in settings.`,
         { code: 'unsupported_provider' }
@@ -116,7 +116,7 @@
     return { url: config.url, init: { method: 'POST', headers, body: JSON.stringify(body) }, model: resolvedModel };
   }
 
-  // Returns the generated text, or throws a SmartlateError when the provider
+  // Returns the generated text, or throws a PhravexaError when the provider
   // answered 200 but without usable text.
   function parseResponse(provider, json) {
     let content = '';
@@ -124,7 +124,7 @@
     let refused = false;
 
     if (!json || typeof json !== 'object') {
-      throw new SmartlateError('Unexpected Response', 'The AI provider returned an unreadable response. Please try again.', { code: 'bad_response' });
+      throw new PhravexaError('Unexpected Response', 'The AI provider returned an unreadable response. Please try again.', { code: 'bad_response' });
     }
 
     if (provider === 'anthropic') {
@@ -146,10 +146,10 @@
     }
 
     if (refused && !content.trim()) {
-      throw new SmartlateError('Request Declined', 'The AI provider declined to process this text.', { isWarning: true, code: 'refused' });
+      throw new PhravexaError('Request Declined', 'The AI provider declined to process this text.', { isWarning: true, code: 'refused' });
     }
     if (!content.trim()) {
-      throw new SmartlateError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
+      throw new PhravexaError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
     }
     return { content, truncated };
   }
@@ -202,42 +202,42 @@
     const suffix = detail ? ` (${detail.slice(0, 160)})` : '';
 
     if (status === 401 || status === 403) {
-      return new SmartlateError('Invalid API Key', `${providerLabel} rejected your API key. Please check it in Smartlate settings.`, { code: 'auth' });
+      return new PhravexaError('Invalid API Key', `${providerLabel} rejected your API key. Please check it in Phravexa settings.`, { code: 'auth' });
     }
     if (status === 402 || lowered.includes('insufficient') || lowered.includes('quota') || lowered.includes('credit balance')) {
-      return new SmartlateError('Out of Credit', `${providerLabel} reports that your account has no remaining credit or quota. Add billing credit with the provider and try again.`, { code: 'quota' });
+      return new PhravexaError('Out of Credit', `${providerLabel} reports that your account has no remaining credit or quota. Add billing credit with the provider and try again.`, { code: 'quota' });
     }
     if (status === 429) {
-      return new SmartlateError('Rate Limit', `${providerLabel} is rate limiting requests. Please wait a moment and try again.`, { isWarning: true, code: 'rate_limit' });
+      return new PhravexaError('Rate Limit', `${providerLabel} is rate limiting requests. Please wait a moment and try again.`, { isWarning: true, code: 'rate_limit' });
     }
     if (status === 404 || (status === 400 && lowered.includes('model') &&
         /(not found|does not exist|invalid|unknown|not supported|not available)/.test(lowered))) {
-      return new SmartlateError('Model Not Available', `The selected model is not available for your account${suffix}. Set a different model in Smartlate settings.`, { code: 'model' });
+      return new PhravexaError('Model Not Available', `The selected model is not available for your account${suffix}. Set a different model in Phravexa settings.`, { code: 'model' });
     }
     if (status === 400 || status === 413 || status === 422) {
-      return new SmartlateError('Request Rejected', `${providerLabel} rejected the request${suffix}.`, { code: 'bad_request' });
+      return new PhravexaError('Request Rejected', `${providerLabel} rejected the request${suffix}.`, { code: 'bad_request' });
     }
     if (status >= 500) {
-      return new SmartlateError('Provider Unavailable', `${providerLabel} is temporarily unavailable (HTTP ${status}). Please try again shortly.`, { isWarning: true, code: 'server' });
+      return new PhravexaError('Provider Unavailable', `${providerLabel} is temporarily unavailable (HTTP ${status}). Please try again shortly.`, { isWarning: true, code: 'server' });
     }
-    return new SmartlateError('Translation Error', `Request failed with HTTP ${status}${suffix}.`, { code: 'http' });
+    return new PhravexaError('Translation Error', `Request failed with HTTP ${status}${suffix}.`, { code: 'http' });
   }
 
   function classifyNetworkError(err) {
     if (err && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
-      return new SmartlateError('Request Timed Out', 'The AI provider did not respond in time. Please try again.', { isWarning: true, code: 'timeout' });
+      return new PhravexaError('Request Timed Out', 'The AI provider did not respond in time. Please try again.', { isWarning: true, code: 'timeout' });
     }
-    return new SmartlateError('Network Error', 'Could not reach the AI provider. Please check your internet connection.', { isWarning: true, code: 'network' });
+    return new PhravexaError('Network Error', 'Could not reach the AI provider. Please check your internet connection.', { isWarning: true, code: 'network' });
   }
 
   function validateSelection(selection) {
     const text = selection && typeof selection.text === 'string' ? selection.text : '';
     if (!text.trim()) {
-      throw new SmartlateError('No Text Selected', 'Select some text first, then right-click and choose a language.', { isWarning: true, code: 'empty_selection' });
+      throw new PhravexaError('No Text Selected', 'Select some text first, then right-click and choose a language.', { isWarning: true, code: 'empty_selection' });
     }
     const input = selection.html || text;
     if (input.length > MAX_INPUT_CHARS) {
-      throw new SmartlateError('Selection Too Long', `Please select less text (up to about ${MAX_INPUT_CHARS.toLocaleString('en-US')} characters).`, { isWarning: true, code: 'too_long' });
+      throw new PhravexaError('Selection Too Long', `Please select less text (up to about ${MAX_INPUT_CHARS.toLocaleString('en-US')} characters).`, { isWarning: true, code: 'too_long' });
     }
   }
 
@@ -260,7 +260,7 @@
     PROVIDERS,
     MAX_INPUT_CHARS,
     MAX_OUTPUT_TOKENS,
-    SmartlateError,
+    PhravexaError,
     isRephrase,
     buildPrompt,
     resolveModel,
@@ -276,5 +276,5 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = api;
   }
-  root.SmartlateCore = api;
+  root.PhravexaCore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

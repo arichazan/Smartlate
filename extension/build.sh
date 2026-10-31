@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Smartlate build script: creates the Chrome Web Store ZIP in dist/ and
+# Phravexa build script: creates the Chrome Web Store ZIP in dist/ and
 # verifies its contents. Usage: ./extension/build.sh (from any directory)
 set -euo pipefail
 
@@ -8,7 +8,7 @@ ROOT_DIR="$(cd "${EXT_DIR}/.." && pwd)"
 DIST_DIR="${ROOT_DIR}/dist"
 
 VERSION="$(node -p "require('${EXT_DIR}/manifest.json').version")"
-ZIP_NAME="smartlate-${VERSION}.zip"
+ZIP_NAME="phravexa-${VERSION}.zip"
 ZIP_PATH="${DIST_DIR}/${ZIP_NAME}"
 
 # Files shipped in the store package. Anything not listed here is left out.
@@ -29,7 +29,7 @@ FILES=(
   icons/icon128.png
 )
 
-echo "Building Smartlate ${VERSION}"
+echo "Building Phravexa ${VERSION}"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "${STAGE}"' EXIT
 

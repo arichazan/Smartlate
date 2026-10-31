@@ -1,4 +1,4 @@
-const { PROVIDERS, normalizeLanguages } = globalThis.SmartlateCore;
+const { PROVIDERS, normalizeLanguages } = globalThis.PhravexaCore;
 
 const providerSelect = document.getElementById('provider');
 const apiKeyInput = document.getElementById('apiKey');

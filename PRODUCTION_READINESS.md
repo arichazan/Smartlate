@@ -1,4 +1,4 @@
-# Smartlate: Production Readiness
+# Phravexa: Production Readiness
 
 Branch: `production-ready` · Extension version: **1.2.0** · Chrome Web Store ID: `kdcfdhofgpgajndceenbjoocapfmojke`
 
@@ -11,8 +11,8 @@ Before, the Anthropic provider could not work because its default model had been
 ## 2. What was done
 
 ### Name and version
-- Unified the name to **Smartlate** in the manifest (`Smartlate – AI Translate & Rephrase`, `short_name: Smartlate`), settings page, popup, content script, README, store texts, privacy policy and promo tiles.
-- Version bumped from 1.1.0 to **1.2.0**. The build now writes `dist/smartlate-1.2.0.zip`. It no longer writes `phravexa-*.zip`.
+- Unified the name to **Phravexa** (the owner's chosen brand; the repo and landing slug were previously "Smartlate") in the manifest (`Phravexa – AI Translate & Rephrase`, `short_name: Phravexa`), settings page, popup, content script, README, store texts, privacy policy and promo tiles.
+- Version bumped from 1.1.0 to **1.2.0**. The build now writes `dist/phravexa-1.2.0.zip`.
 - Re-rendered the three promo images (`440x280.png`, `920x680.png`, `1400x560.png`) from the renamed HTML tiles.
 
 ### Code review findings and fixes (`extension/*.js`)
@@ -48,7 +48,7 @@ Before, the Anthropic provider could not work because its default model had been
 - CI: https://github.com/arichazan/Smartlate/actions/runs/41211297024 (code commits) and https://github.com/arichazan/Smartlate/actions/runs/41211556186 (with docs) both passed.
 
 ### Build
-- `extension/build.sh` can run from any directory. It copies an explicit allow-list of 14 runtime files to a temp dir, normalises timestamps (reproducible ZIP), zips to `dist/smartlate-<version>.zip` and runs `scripts/verify-package.js`. The verifier fails the build if a file is missing or unexpected, if dev or secret files (`.md`, `.sh`, `.pem`, tests, dotfiles) are included, if the manifest is invalid or has a name over 75 or a description over 132 characters, if the ZIP name does not match the version, or if any manifest-referenced or runtime-loaded file is absent.
+- `extension/build.sh` can run from any directory. It copies an explicit allow-list of 14 runtime files to a temp dir, normalises timestamps (reproducible ZIP), zips to `dist/phravexa-<version>.zip` and runs `scripts/verify-package.js`. The verifier fails the build if a file is missing or unexpected, if dev or secret files (`.md`, `.sh`, `.pem`, tests, dotfiles) are included, if the manifest is invalid or has a name over 75 or a description over 132 characters, if the ZIP name does not match the version, or if any manifest-referenced or runtime-loaded file is absent.
 - `dist/` and `*.zip` are git-ignored.
 
 ### Documentation
@@ -59,13 +59,13 @@ Before, the Anthropic provider could not work because its default model had been
 
 ### Owner must do (Ari)
 
-1. **Merge the branch.** On GitHub, go to arichazan/Smartlate, open **Pull requests**, click **New pull request**, set base `main` and compare `production-ready`, then **Create pull request**. Check that CI is green, then **Merge**. The privacy-policy URL below only works after the merge.
-2. **Smoke-test with real keys (about 10 minutes).** Run `./extension/build.sh` (or download the `smartlate-store-zip` artifact from the CI run) and unzip it. In `chrome://extensions`, turn on Developer mode, click **Load unpacked** and pick the unzipped folder. Remove or disable the store version first. For **each** provider you have a key for (OpenAI, Anthropic, DeepSeek): open settings, choose the provider, paste the key and save. Then on any page, select a paragraph with bold text and a link, right-click, choose **Spanish** and paste into Gmail or Docs. Expected: a "Copied to clipboard" popup, with formatting kept. Also try **English** inside a textarea with blank lines. Then enter a wrong key and check that "Invalid API Key" appears. If a provider reports "Model Not Available", type a model your account has into **Model (optional)** and tell engineering which one, so the default can be updated.
-3. **Upload the update.** Go to https://chrome.google.com/webstore/devconsole and open **Smartlate**. Under **Package**, click **Upload new package** and choose `dist/smartlate-1.2.0.zip`.
-4. **Store listing tab.** Paste the description from `chrome-store-submission/store-description.txt`. Replace the small promo tile with `440x280.png` and the marquee with `1400x560.png`. Check that the screenshots in `chrome-store-submission/screenshots/` do not show the old name; if any do, take new ones at 1280x800. Set Homepage URL to `https://arichazan.github.io/apps/smartlate.html`.
+1. **Merge the branch.** On GitHub, go to arichazan/Phravexa, open **Pull requests**, click **New pull request**, set base `main` and compare `production-ready`, then **Create pull request**. Check that CI is green, then **Merge**. The privacy-policy URL below only works after the merge.
+2. **Smoke-test with real keys (about 10 minutes).** Run `./extension/build.sh` (or download the `phravexa-store-zip` artifact from the CI run) and unzip it. In `chrome://extensions`, turn on Developer mode, click **Load unpacked** and pick the unzipped folder. Remove or disable the store version first. For **each** provider you have a key for (OpenAI, Anthropic, DeepSeek): open settings, choose the provider, paste the key and save. Then on any page, select a paragraph with bold text and a link, right-click, choose **Spanish** and paste into Gmail or Docs. Expected: a "Copied to clipboard" popup, with formatting kept. Also try **English** inside a textarea with blank lines. Then enter a wrong key and check that "Invalid API Key" appears. If a provider reports "Model Not Available", type a model your account has into **Model (optional)** and tell engineering which one, so the default can be updated.
+3. **Upload the update.** Go to https://chrome.google.com/webstore/devconsole and open **Phravexa**. Under **Package**, click **Upload new package** and choose `dist/phravexa-1.2.0.zip`.
+4. **Store listing tab.** Paste the description from `chrome-store-submission/store-description.txt`. Replace the small promo tile with `440x280.png` and the marquee with `1400x560.png`. Check that the screenshots in `chrome-store-submission/screenshots/` do not show the old name; if any do, take new ones at 1280x800. Set Homepage URL to `https://arichazan.github.io/apps/phravexa.html`.
 5. **Privacy practices tab.** Paste the single purpose, the permission justifications and the data disclosures from `chrome-store-submission/SUBMISSION_CHECKLIST.md`. Set Privacy policy URL to `https://github.com/arichazan/Smartlate/blob/main/PRIVACY.md`. Tick the three certifications.
 6. **Submit for review.** Click **Submit for review** and keep "Publish automatically after review" if you want it live right away.
-7. **Landing page.** In the landing page source (`apps/smartlate.html` on arichazan.github.io), add a footer link "Privacy policy" pointing to the URL above.
+7. **Landing page.** In the landing page source (`apps/phravexa.html` on arichazan.github.io), add a footer link "Privacy policy" pointing to the URL above.
 
 ### Engineering left
 - No real-provider call could be made from this container (no API keys). The request shapes are unit-tested and the full flow is e2e-tested against stubs, but the first live check is owner step 2.
@@ -77,7 +77,7 @@ Before, the Anthropic provider could not work because its default model had been
 - [x] Manifest V3, name ≤ 75 chars, description ≤ 132 chars (126), version 1.2.0 (higher than the live 1.1.0)
 - [x] No new permissions or hosts compared with the live version (no re-approval prompt for existing users)
 - [x] No remote code; all JS packaged; no `eval`
-- [x] Store ZIP built and verified (`dist/smartlate-1.2.0.zip`, 14 files)
+- [x] Store ZIP built and verified (`dist/phravexa-1.2.0.zip`, 14 files)
 - [x] Icons 16/48/128 present
 - [x] Promo tiles 440x280, 920x680, 1400x560 rendered with the new name
 - [x] Description matches actual features (`store-description.txt`)
@@ -89,12 +89,12 @@ Before, the Anthropic provider could not work because its default model had been
 - [ ] Owner: screenshots checked for the old name (step 4)
 - [ ] Owner: upload, update listing and privacy tabs, submit (steps 3 to 6)
 
-## 5. Design: paid "no API key needed" plan (Smartlate Plus)
+## 5. Design: paid "no API key needed" plan (Phravexa Plus)
 
 Design only. None of this is implemented.
 
 ### 5.1 Goal and offer
-- Users who don't want to manage an API key subscribe to **Smartlate Plus** and use Smartlate right away.
+- Users who don't want to manage an API key subscribe to **Phravexa Plus** and use Phravexa right away.
 - **Price: €4/month** (VAT included), or **€36/year** (25% off). Optional 7-day free trial. €4 sits in the requested €3–5 range and leaves margin after payment fees (about 5% + €0.50 per transaction for a merchant of record) and model costs.
 - **Fair-use quota:** 300,000 characters of input per month (roughly 150 average emails), plus 30,000 characters per request and 20 requests per minute. When the quota is reached, the extension shows when it resets and suggests the bring-your-own-key mode, which stays free and unchanged.
 - **Unit cost:** 300k characters is about 100k input tokens plus about 100k output tokens. With a low-cost fast model at roughly $0.10–$1 per million input tokens and $0.50–$5 per million output tokens, a heavy user costs between $0.06 and $0.60 a month. The margin stays positive even at the quota cap.
@@ -106,7 +106,7 @@ Extension (service worker)
    │  POST /v1/transform  {language, instructions, text|html}
    │  Authorization: Bearer <session token>
    ▼
-Smartlate proxy  (Cloudflare Workers, EU jurisdiction; KV + Durable Object for counters)
+Phravexa proxy  (Cloudflare Workers, EU jurisdiction; KV + Durable Object for counters)
    ├─ verifies session token (HMAC-signed, 24 h)
    ├─ checks quota / rate limit (Durable Object per license)
    ├─ builds the prompt server-side (same buildPrompt as extension/lib/core.js, shared as an npm workspace package)
@@ -135,7 +135,7 @@ Licensing provider (Lemon Squeezy)
 **Recommendation: Lemon Squeezy.** VAT handling and a server-verifiable license are the deciding factors for a hosted proxy. Before building, check that Lemon Squeezy's current terms and its license-key features still cover subscriptions. If not, use Paddle, also a merchant of record, with the same design.
 
 **License flow**
-1. The settings page shows **"Get Smartlate Plus"**, which opens the Lemon Squeezy checkout (a hosted page, so no payment data touches the extension).
+1. The settings page shows **"Get Phravexa Plus"**, which opens the Lemon Squeezy checkout (a hosted page, so no payment data touches the extension).
 2. The buyer receives a license key by email and pastes it into settings.
 3. The extension calls `POST /v1/license/activate {licenseKey, instanceName: "Chrome on <OS>"}`. The proxy calls Lemon Squeezy `activate`, stores `{licenseIdHash, instanceId, status, plan}` in KV, and returns a session token signed with HMAC (`sub` = license hash, `exp` = 24 h).
 4. The extension stores the license key and token in `chrome.storage.local`. On a 401 `token_expired` it calls `/v1/license/refresh`, and the proxy re-validates with Lemon Squeezy (result cached for 6 h).
@@ -143,14 +143,14 @@ Licensing provider (Lemon Squeezy)
 6. Activation limit: 3 devices per license. **Deactivate this device** in settings calls `/v1/license/deactivate`.
 
 ### 5.4 Changes needed in the extension
-- **Manifest:** add `"optional_host_permissions": ["https://api.smartlate.<domain>/*"]` and request it with `chrome.permissions.request` on the settings page when the user activates Plus. Existing users are **not** prompted and the extension is not disabled on update. Do **not** add it to `host_permissions`.
-- **`lib/core.js`:** add a `smartlate` provider. `buildRequest` sends `{language, instructions, text, html}` (no client-side prompt) with `Authorization: Bearer <token>`. `parseResponse` reads `{content, truncated, quota}`. `classifyHttpError` gains `402 subscription_inactive` ("Your Smartlate Plus subscription is not active – manage it here"), `429 quota_exceeded` (shows `resetsAt`) and `401 token_expired` (handled silently by a refresh).
-- **`background.js`:** a `getPlusToken()` helper with refresh-on-401 and a single retry. `getSettings()` returns `provider: 'smartlate'` with no API key required. The "Setup Required" check accepts an active license instead of a key.
-- **Settings page:** a first provider option **"Smartlate Plus (no API key needed)"** with license key field, Activate/Deactivate buttons, status (plan, renewal date, characters used this month) and links to buy and to manage the subscription (Lemon Squeezy customer portal). The bring-your-own-key options stay as they are.
+- **Manifest:** add `"optional_host_permissions": ["https://api.phravexa.<domain>/*"]` and request it with `chrome.permissions.request` on the settings page when the user activates Plus. Existing users are **not** prompted and the extension is not disabled on update. Do **not** add it to `host_permissions`.
+- **`lib/core.js`:** add a `phravexa` provider. `buildRequest` sends `{language, instructions, text, html}` (no client-side prompt) with `Authorization: Bearer <token>`. `parseResponse` reads `{content, truncated, quota}`. `classifyHttpError` gains `402 subscription_inactive` ("Your Phravexa Plus subscription is not active – manage it here"), `429 quota_exceeded` (shows `resetsAt`) and `401 token_expired` (handled silently by a refresh).
+- **`background.js`:** a `getPlusToken()` helper with refresh-on-401 and a single retry. `getSettings()` returns `provider: 'phravexa'` with no API key required. The "Setup Required" check accepts an active license instead of a key.
+- **Settings page:** a first provider option **"Phravexa Plus (no API key needed)"** with license key field, Activate/Deactivate buttons, status (plan, renewal date, characters used this month) and links to buy and to manage the subscription (Lemon Squeezy customer portal). The bring-your-own-key options stay as they are.
 - **Popup:** shows the remaining quota for Plus users.
 - **Tests:** unit tests for the new provider's request and response handling and error mapping; an e2e test with a stubbed proxy (activate, then translate, then quota exceeded); proxy unit tests with Miniflare/Vitest (token verification, quota counter, webhook signature check).
-- **Docs and store:** update `PRIVACY.md`. For Plus, text passes through the TR1.eu proxy, so add a processing section, the upstream sub-processor, EU hosting, no content logs and retention of usage counters for 13 months. Add Terms of Service and a refund policy (Lemon Squeezy requires both). Update the store description ("Free with your own key, or Smartlate Plus €4/month") and the data disclosures (Plus adds "Payment" only for the license key, as payments happen on Lemon Squeezy's page).
+- **Docs and store:** update `PRIVACY.md`. For Plus, text passes through the TR1.eu proxy, so add a processing section, the upstream sub-processor, EU hosting, no content logs and retention of usage counters for 13 months. Add Terms of Service and a refund policy (Lemon Squeezy requires both). Update the store description ("Free with your own key, or Phravexa Plus €4/month") and the data disclosures (Plus adds "Payment" only for the license key, as payments happen on Lemon Squeezy's page).
 
 ### 5.5 Rollout and effort
 1. Proxy plus Lemon Squeezy test mode: about 3–4 days. 2. Extension changes and tests: about 2–3 days. 3. Legal texts, listing update and store review: about 1 week of calendar time.
-Owner prerequisites: a Lemon Squeezy store (KYC, payout account, product "Smartlate Plus" with monthly and yearly variants and license keys enabled), a Cloudflare account and domain, an upstream AI provider billing account with a spending limit, and the Terms of Service and refund policy texts.
+Owner prerequisites: a Lemon Squeezy store (KYC, payout account, product "Phravexa Plus" with monthly and yearly variants and license keys enabled), a Cloudflare account and domain, an upstream AI provider billing account with a spending limit, and the Terms of Service and refund policy texts.

@@ -1,6 +1,6 @@
 // Prevent duplicate injection
-if (!window.smartlateContentScriptLoaded) {
-    window.smartlateContentScriptLoaded = true;
+if (!window.phravexaContentScriptLoaded) {
+    window.phravexaContentScriptLoaded = true;
 
     // Store reference to current popup
     let currentPopup = null;

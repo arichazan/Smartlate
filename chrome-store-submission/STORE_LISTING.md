@@ -1,10 +1,10 @@
-# Chrome Web Store Listing: Smartlate
+# Chrome Web Store Listing: Phravexa
 
 Copy-paste source for the Chrome Web Store Developer Dashboard (Store listing tab).
 The plain-text description below is also in `store-description.txt`.
 
 ## Name (from manifest, 75 characters max)
-Smartlate – AI Translate & Rephrase
+Phravexa – AI Translate & Rephrase
 
 ## Summary / short description (from manifest, 132 characters max)
 Right-click any selected text to translate or rephrase it with your own OpenAI, Anthropic or DeepSeek key. Formatting is kept.
@@ -14,12 +14,12 @@ Right-click any selected text to translate or rephrase it with your own OpenAI, 
 ## Detailed description
 
 ```
-Select text on any page, right-click and pick a language. Smartlate translates or rephrases it with your own AI key and puts the result on your clipboard, formatting included.
+Select text on any page, right-click and pick a language. Phravexa translates or rephrases it with your own AI key and puts the result on your clipboard, formatting included.
 
 HOW IT WORKS
 1. Select text on a web page or inside a text box.
 2. Right-click and choose a language from the menu.
-3. Smartlate copies the result to your clipboard and shows a short confirmation on the page.
+3. Phravexa copies the result to your clipboard and shows a short confirmation on the page.
 4. Paste it wherever you need it.
 
 Choosing "English" rephrases the text in your chosen tone. Choosing any other language translates it and applies the same tone.
@@ -28,19 +28,19 @@ FEATURES
 - Any language: add as many target languages as you like. Each one appears directly in the right-click menu.
 - Your tone: write your own instructions, such as "professional but friendly" or "short and casual", and they are applied to every result.
 - Formatting kept: when you select text on a page, headings, bold, italics, links, lists and tables are kept, so the result pastes cleanly into Gmail, Google Docs, Word or Slack. Text from text boxes keeps its line breaks and indentation.
-- Choose your AI provider: OpenAI, Anthropic or DeepSeek. Smartlate uses a fast default model for each, and you can set a different model in settings.
+- Choose your AI provider: OpenAI, Anthropic or DeepSeek. Phravexa uses a fast default model for each, and you can set a different model in settings.
 - Clear errors: an invalid key, empty account credit, rate limits and network problems are explained on the page, so you know what to fix.
 
 PRIVACY
-- No account, no Smartlate servers, no analytics.
+- No account, no Phravexa servers, no analytics.
 - Your API key is stored only on your device.
-- Selected text is sent only when you click a Smartlate menu item, and only to the provider you chose.
+- Selected text is sent only when you click a Phravexa menu item, and only to the provider you chose.
 
 BRING YOUR OWN KEY
-Smartlate has no subscription. You need an API key from OpenAI, Anthropic or DeepSeek and you pay that provider directly for what you use, which is usually a few cents a month for everyday translation.
+Phravexa has no subscription. You need an API key from OpenAI, Anthropic or DeepSeek and you pay that provider directly for what you use, which is usually a few cents a month for everyday translation.
 
 SETUP
-1. Install Smartlate. The settings page opens automatically.
+1. Install Phravexa. The settings page opens automatically.
 2. Choose your provider and paste your API key.
 3. Adjust the languages and tone if you like, then save.
 ```
@@ -52,7 +52,7 @@ Productivity (Workflow & Planning) or Tools. Keep the category the live listing 
 English
 
 ## URLs
-- Homepage: https://arichazan.github.io/apps/smartlate.html
+- Homepage: https://arichazan.github.io/apps/phravexa.html
 - Support: mailto:support@itbcn.com (or the homepage)
 - Privacy policy: https://github.com/arichazan/Smartlate/blob/main/PRIVACY.md
 

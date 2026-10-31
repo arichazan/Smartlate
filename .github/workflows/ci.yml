@@ -30,7 +30,7 @@ jobs:
             const m = require('./extension/manifest.json');
             const p = require('./package.json');
             if (m.version !== p.version) { console.error('manifest ' + m.version + ' != package.json ' + p.version); process.exit(1); }
-            if (!m.name.startsWith('Smartlate')) { console.error('unexpected name ' + m.name); process.exit(1); }
+            if (!m.name.startsWith('Phravexa')) { console.error('unexpected name ' + m.name); process.exit(1); }
           "
           for f in extension/*.js extension/lib/*.js; do node --check "$f"; done
 
@@ -45,6 +45,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: smartlate-store-zip
+          name: phravexa-store-zip
           path: dist/*.zip
           if-no-files-found: error

@@ -1,11 +1,11 @@
-# Smartlate
+# Phravexa
 
 [![CI](https://github.com/arichazan/Smartlate/actions/workflows/ci.yml/badge.svg)](https://github.com/arichazan/Smartlate/actions/workflows/ci.yml)
 
 A Chrome extension (Manifest V3) that translates or rephrases selected text with your own OpenAI, Anthropic or DeepSeek API key and copies the result to your clipboard, formatting included.
 
 - Chrome Web Store: https://chromewebstore.google.com/detail/kdcfdhofgpgajndceenbjoocapfmojke
-- Website: https://arichazan.github.io/apps/smartlate.html
+- Website: https://arichazan.github.io/apps/phravexa.html
 - Privacy policy: [PRIVACY.md](PRIVACY.md)
 
 ## Features
@@ -66,7 +66,7 @@ Install from the Chrome Web Store, or for development:
 
 - API keys are stored in `chrome.storage.local` on this device only; preferences (provider, languages, tone) use `chrome.storage.sync`
 - Selected text is sent only when you click a menu item, and only to the AI provider you configured
-- No Smartlate servers, no analytics. See [PRIVACY.md](PRIVACY.md)
+- No Phravexa servers, no analytics. See [PRIVACY.md](PRIVACY.md)
 
 ## Permissions
 
@@ -100,7 +100,7 @@ CI runs both on every push (`.github/workflows/ci.yml`).
 ./extension/build.sh
 ```
 
-Creates `dist/smartlate-<version>.zip` with only the extension's runtime files and verifies the contents (file list, manifest, referenced files).
+Creates `dist/phravexa-<version>.zip` with only the extension's runtime files and verifies the contents (file list, manifest, referenced files).
 
 ### File Structure
 

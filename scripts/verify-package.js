@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Verifies a Smartlate store ZIP: exact file list, valid manifest, version in
+// Verifies a Phravexa store ZIP: exact file list, valid manifest, version in
 // file name matches the manifest, and every file the manifest references exists.
 // Usage: node scripts/verify-package.js <zip> <expected files...>
 'use strict';
@@ -39,7 +39,7 @@ if (manifest) {
   if (!manifest.name || manifest.name.length > 75) errors.push('name missing or longer than 75 characters');
   if (!manifest.description || manifest.description.length > 132) errors.push('description missing or longer than 132 characters');
   if (!/^\d+(\.\d+){0,3}$/.test(manifest.version || '')) errors.push(`invalid version: ${manifest.version}`);
-  const expectedName = `smartlate-${manifest.version}.zip`;
+  const expectedName = `phravexa-${manifest.version}.zip`;
   if (path.basename(zipPath) !== expectedName) errors.push(`ZIP should be named ${expectedName}`);
 
   const referenced = [

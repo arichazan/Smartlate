@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Smartlate – AI Translate & Rephrase",
-  "short_name": "Smartlate",
+  "name": "Phravexa – AI Translate & Rephrase",
+  "short_name": "Phravexa",
   "version": "1.2.0",
   "description": "Right-click any selected text to translate or rephrase it with your own OpenAI, Anthropic or DeepSeek key. Formatting is kept.",
-  "homepage_url": "https://arichazan.github.io/apps/smartlate.html",
+  "homepage_url": "https://arichazan.github.io/apps/phravexa.html",
   "permissions": [
     "contextMenus",
     "storage",

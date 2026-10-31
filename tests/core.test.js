@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const core = require('../extension/lib/core.js');
 
 const { buildPrompt, buildRequest, parseResponse, cleanResult, classifyHttpError,
-  classifyNetworkError, validateSelection, normalizeLanguages, resolveModel, PROVIDERS, SmartlateError } = core;
+  classifyNetworkError, validateSelection, normalizeLanguages, resolveModel, PROVIDERS, PhravexaError } = core;
 
 test('buildPrompt: rephrase in English uses tone and plain-text formatting rules', () => {
   const { prompt, isHtml, input, resultName } = buildPrompt({ language: 'English', instructions: 'Casual', text: 'Hi\n\n- a\n- b', html: null });
@@ -80,7 +80,7 @@ test('buildRequest: DeepSeek endpoint and model override', () => {
 });
 
 test('buildRequest: unknown provider throws a user-facing error', () => {
-  assert.throws(() => buildRequest({ provider: 'nope', apiKey: 'k', prompt: 'P' }), e => e instanceof SmartlateError && e.code === 'unsupported_provider');
+  assert.throws(() => buildRequest({ provider: 'nope', apiKey: 'k', prompt: 'P' }), e => e instanceof PhravexaError && e.code === 'unsupported_provider');
 });
 
 test('resolveModel: blank override uses default', () => {

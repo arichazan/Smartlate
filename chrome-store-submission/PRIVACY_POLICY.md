@@ -1,4 +1,4 @@
-# Smartlate Privacy Policy
+# Phravexa Privacy Policy
 
 The privacy policy is maintained in one place: [`PRIVACY.md`](../PRIVACY.md) at the repository root.
 

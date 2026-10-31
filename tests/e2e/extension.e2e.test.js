@@ -25,7 +25,7 @@ let context, worker, server, baseUrl, userDataDir, extDir;
 // gesture. The test copy adds a host permission for the local fixture server
 // so scripts can be injected without one.
 function prepareTestExtension() {
-  extDir = fs.mkdtempSync(path.join(os.tmpdir(), 'smartlate-ext-'));
+  extDir = fs.mkdtempSync(path.join(os.tmpdir(), 'phravexa-ext-'));
   fs.cpSync(EXT_SRC, extDir, { recursive: true });
   const manifestPath = path.join(extDir, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -42,7 +42,7 @@ test.before(async () => {
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   baseUrl = `http://127.0.0.1:${server.address().port}/`;
 
-  userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'smartlate-profile-'));
+  userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'phravexa-profile-'));
   context = await chromium.launchPersistentContext(userDataDir, {
     channel: 'chromium',
     headless: true,
@@ -110,14 +110,14 @@ test('service worker boots with the core module and defaults', async () => {
     await new Promise(r => setTimeout(r, 100));
   }
   const state = await worker.evaluate(async () => ({
-    hasCore: typeof self.SmartlateCore === 'object',
+    hasCore: typeof self.PhravexaCore === 'object',
     sync: await chrome.storage.sync.get(['languages', 'tone']),
     manifest: chrome.runtime.getManifest()
   }));
   assert.equal(state.hasCore, true);
   assert.deepEqual(state.sync.languages, ['German', 'Spanish', 'French', 'Chinese']);
   assert.ok(state.sync.tone.length > 0);
-  assert.equal(state.manifest.name, 'Smartlate – AI Translate & Rephrase');
+  assert.equal(state.manifest.name, 'Phravexa – AI Translate & Rephrase');
 });
 
 test('formatted selection is translated, copied as HTML and confirmed in the page', async () => {
