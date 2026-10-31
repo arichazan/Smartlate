@@ -10,6 +10,8 @@ Choosing "English" rephrases the text in your chosen tone. Choosing any other la
 
 FEATURES
 - Any language: add as many target languages as you like. Each one appears directly in the right-click menu.
+- Keyboard shortcut: press Alt+Shift+T to translate or rephrase the selection with the language you used last. Change the key at chrome://extensions/shortcuts.
+- Copy original: after the text is replaced, one click puts your original text back on the clipboard.
 - Your tone: write your own instructions, such as "professional but friendly" or "short and casual", and they are applied to every result.
 - Replaces text in place: select text in a text box or email editor and the result replaces it right where you're typing, with no copy and paste. Undo with Ctrl/Cmd+Z. Text selected elsewhere on a page goes to your clipboard.
 - Formatting kept: when you select text on a page, headings, bold, italics, links, lists and tables are kept, so the result pastes cleanly into Gmail, Google Docs, Word or Slack. Text from text boxes keeps its line breaks and indentation.
@@ -19,7 +21,10 @@ FEATURES
 PRIVACY
 - No account, no Phravexa servers, no analytics.
 - Your API key is stored only on your device.
-- Selected text is sent only when you click a Phravexa menu item, and only to the provider you chose.
+- Selected text is sent only when you click a Phravexa menu item or press the shortcut, and only to the provider you chose. Password fields are never read.
+
+LANGUAGES
+The extension's menus, settings and messages are available in English, Spanish, French, German and Hebrew.
 
 BRING YOUR OWN KEY
 Phravexa has no subscription. You need an API key from OpenAI, Anthropic or DeepSeek and you pay that provider directly for what you use, which is usually a few cents a month for everyday translation.

@@ -18,6 +18,9 @@ A Chrome extension (Manifest V3) that translates or rephrases selected text with
 - **In-Place Replacement**: Text selected in a text box or editor is replaced with the result directly (Cmd/Ctrl+Z undoes it). Truncated results are never written back
 - **Clipboard Integration**: The result is also copied to the clipboard and previewed in a small popup on the page
 - **Simple Menu**: Flat menu structure with all languages at the top level
+- **Keyboard Shortcut**: `Alt+Shift+T` (change it at `chrome://extensions/shortcuts`) transforms the selection with the last language you picked; English (rephrase) until you pick one
+- **Copy Original**: A button in the result popup puts the original selected text back on the clipboard
+- **Localised UI**: English, Spanish, French, German and Hebrew (`extension/_locales`)
 - **Clear Errors**: Invalid key, no credit, rate limits, unknown model and network problems are explained on the page
 
 ## Installation
@@ -56,6 +59,8 @@ Install from the Chrome Web Store, or for development:
 4. In a text box or editor the selection is replaced with the result; it is also copied to your clipboard
 5. Paste anywhere with `Cmd+V` (Mac) or `Ctrl+V` (Windows)
 
+Or press `Alt+Shift+T` to repeat the last language on a new selection. Password fields are never read; email and number inputs and read-only fields get the result on the clipboard only.
+
 ## How It Works
 
 - **English**: Only rephrases the text using the configured tone
@@ -72,7 +77,7 @@ Install from the Chrome Web Store, or for development:
 ## Permissions
 
 - `contextMenus`: The right-click menu with your languages
-- `activeTab` + `scripting`: Read the selection (with formatting) and show the status popup in the tab you clicked
+- `activeTab` + `scripting`: Read the selection (with formatting) and show the status popup in the tab you clicked or pressed the shortcut in
 - `storage`: Save your API key (local) and preferences (synced)
 - `offscreen` + `clipboardWrite`: Write the result to the clipboard from an offscreen document
 - `notifications`: Feedback on pages where the in-page popup cannot be shown (chrome:// pages, PDF viewer)

@@ -8,19 +8,21 @@
 ## Summary
 
 - Phravexa has no servers, no accounts, no analytics and no tracking. We (the operator) never receive your text, your API key or your settings.
-- When you choose a language from the right-click menu, the text you selected is sent directly from your browser to the AI provider you configured (OpenAI, Anthropic or DeepSeek), using your own API key.
+- When you choose a language from the right-click menu, or press the Phravexa keyboard shortcut, the text you selected is sent directly from your browser to the AI provider you configured (OpenAI, Anthropic or DeepSeek), using your own API key.
 - Your API key stays on your device. Your other preferences may be synced between your own Chrome browsers by Google Chrome Sync.
 
 ## What the extension handles
 
 | Data | When | Where it goes | Kept for |
 |---|---|---|---|
-| **Selected text** (plain text, or the HTML markup of a selection on a web page so formatting can be kept) | Only when you pick a language from the Phravexa right-click menu | Sent over HTTPS to your chosen AI provider, together with the translation/rephrasing instructions | Not stored by Phravexa. It exists in memory only while the request runs. |
+| **Selected text** (plain text, or the HTML markup of a selection on a web page so formatting can be kept) | Only when you pick a language from the Phravexa right-click menu or press the Phravexa keyboard shortcut | Sent over HTTPS to your chosen AI provider, together with the translation/rephrasing instructions | Not stored by Phravexa. It exists in memory only while the request runs. |
 | **Translated / rephrased result** | After the provider replies | Written back into the text box or editor you selected it in (if any), copied to your clipboard and shown briefly in a small popup on the page | Not stored by Phravexa. It stays on your clipboard until you copy something else. |
 | **API key** for OpenAI, Anthropic or DeepSeek | When you save it on the settings page | Stored in `chrome.storage.local` on this device only. Sent only to the matching provider, as the request's authentication header. | Until you delete it in settings or remove the extension. |
-| **Preferences**: chosen provider, optional model name, tone/special instructions, language list | When you save settings | Stored in `chrome.storage.sync`. If you use Chrome Sync, Google syncs them between browsers signed in to your Google account. | Until you change them or remove the extension. |
+| **Preferences**: chosen provider, optional model name, tone/special instructions, language list, and the language you used last (for the keyboard shortcut) | When you save settings | Stored in `chrome.storage.sync`. If you use Chrome Sync, Google syncs them between browsers signed in to your Google account. | Until you change them or remove the extension. |
 
-Phravexa does not read pages you do not act on. It reads the current selection only at the moment you click a Phravexa menu item, using Chrome's `activeTab` permission.
+Phravexa does not read pages you do not act on. It reads the current selection only at the moment you click a Phravexa menu item or press the Phravexa keyboard shortcut, using Chrome's `activeTab` permission. It never reads or replaces text in password fields.
+
+The **Copy original** button in the confirmation popup copies the text you had selected back to your clipboard. That text is passed only within your browser and is not sent anywhere.
 
 Phravexa does not collect browsing history, location, contacts, identifiers or usage statistics, and does not sell or transfer any data to third parties other than the AI provider you choose for the purpose described above.
 
