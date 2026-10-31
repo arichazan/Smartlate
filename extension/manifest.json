@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
   "name": "AI Translate & Rephrase - Phravexa",
+  "short_name": "Phravexa",
   "version": "1.2.0",
   "description": "Instantly translate and refine text in any text box. Add unlimited languages and customize prompts to match your tone and style.",
+  "homepage_url": "https://arichazan.github.io/apps/phravexa.html",
   "permissions": [
     "contextMenus",
     "storage",

@@ -1,7 +1,5 @@
 // Prevent duplicate injection
-if (window.phravexaContentScriptLoaded) {
-    console.log('Phravexa content script already loaded, skipping...');
-} else {
+if (!window.phravexaContentScriptLoaded) {
     window.phravexaContentScriptLoaded = true;
 
     // Store reference to current popup
@@ -12,19 +10,19 @@ if (window.phravexaContentScriptLoaded) {
         if (message.type === 'ping') {
             sendResponse({ success: true });
         } else if (message.type === 'show-loading') {
-            showLoadingPopup();
+            showLoadingPopup(message.label);
             sendResponse({ success: true });
         } else if (message.type === 'show-popup' && message.text) {
-            showPopup(message.text, message.title);
+            showPopup(message.text, message.truncated, message.title);
             sendResponse({ success: true });
         } else if (message.type === 'show-error') {
             showErrorPopup(message.title, message.message, message.isWarning);
             sendResponse({ success: true });
         }
-        return true;
+        return false;
     });
 
-function showLoadingPopup() {
+function showLoadingPopup(label) {
     // Remove any existing popup
     if (currentPopup && currentPopup.parentNode) {
         currentPopup.remove();
@@ -37,7 +35,11 @@ function showLoadingPopup() {
     // Create header with loading spinner
     const header = document.createElement('div');
     header.className = 'ai-text-tuner-popup-header';
-    header.innerHTML = '<span>Translating</span><span class="ai-text-tuner-spinner"></span>';
+    const labelEl = document.createElement('span');
+    labelEl.textContent = label || 'Translating';
+    const spinner = document.createElement('span');
+    spinner.className = 'ai-text-tuner-spinner';
+    header.append(labelEl, spinner);
 
     // Assemble popup
     popup.appendChild(header);
@@ -47,7 +49,7 @@ function showLoadingPopup() {
     currentPopup = popup;
 }
 
-function showPopup(text, title = 'Copied to clipboard') {
+function showPopup(text, truncated = false, title = 'Copied to clipboard') {
     // Remove any existing popup
     if (currentPopup && currentPopup.parentNode) {
         currentPopup.remove();
@@ -60,8 +62,10 @@ function showPopup(text, title = 'Copied to clipboard') {
     // Create header
     const header = document.createElement('div');
     header.className = 'ai-text-tuner-popup-header';
-    header.innerHTML = '<span class="ai-text-tuner-popup-icon">✓</span><span></span>';
-    header.lastElementChild.textContent = title;
+    header.appendChild(makeIcon('\u2713'));
+    const headerText = document.createElement('span');
+    headerText.textContent = truncated ? `${title} (may be cut short)` : title;
+    header.appendChild(headerText);
 
     // Create content
     const content = document.createElement('div');
@@ -76,7 +80,7 @@ function showPopup(text, title = 'Copied to clipboard') {
     document.body.appendChild(popup);
     currentPopup = popup;
 
-    // Auto-hide after 1 second
+    // Auto-hide after 1.5 seconds
     setTimeout(() => {
         popup.classList.add('hiding');
         setTimeout(() => {
@@ -87,7 +91,7 @@ function showPopup(text, title = 'Copied to clipboard') {
                 currentPopup = null;
             }
         }, 300); // Wait for animation to complete
-    }, 1000);
+    }, 1500);
 }
 
 function showErrorPopup(title, message, isWarning = false) {
@@ -103,8 +107,10 @@ function showErrorPopup(title, message, isWarning = false) {
     // Create header
     const header = document.createElement('div');
     header.className = 'ai-text-tuner-popup-header';
-    const icon = isWarning ? '⚠️' : '❌';
-    header.innerHTML = `<span class="ai-text-tuner-popup-icon">${icon}</span><span>${title}</span>`;
+    header.appendChild(makeIcon(isWarning ? '\u26A0\uFE0F' : '\u274C'));
+    const titleEl = document.createElement('span');
+    titleEl.textContent = title;
+    header.appendChild(titleEl);
 
     // Create content
     const content = document.createElement('div');
@@ -133,4 +139,11 @@ function showErrorPopup(title, message, isWarning = false) {
     }, 4000);
 }
 
-} // End of if-else block to prevent duplicate injection
+function makeIcon(symbol) {
+    const icon = document.createElement('span');
+    icon.className = 'ai-text-tuner-popup-icon';
+    icon.textContent = symbol;
+    return icon;
+}
+
+} // End of guard block to prevent duplicate injection

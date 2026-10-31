@@ -28,3 +28,9 @@ test.html
 config.json
 secrets.json
 .env
+
+# Build output
+dist/
+*.zip
+node_modules/
+test-results/
