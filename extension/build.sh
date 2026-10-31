@@ -24,6 +24,12 @@ FILES=(
   options.js
   popup.html
   popup.js
+  lib/i18n.js
+  _locales/en/messages.json
+  _locales/es/messages.json
+  _locales/fr/messages.json
+  _locales/de/messages.json
+  _locales/he/messages.json
   icons/icon16.png
   icons/icon48.png
   icons/icon128.png

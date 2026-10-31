@@ -31,6 +31,34 @@
   // Selections larger than this are rejected before calling the provider
   const MAX_INPUT_CHARS = 30000;
 
+  // Localised UI string. In the extension this reads _locales/<lang>/messages.json
+  // through chrome.i18n; elsewhere (unit tests in Node) it returns the English
+  // fallback, which must match _locales/en/messages.json (checked by a test).
+  function t(key, fallback, substitutions) {
+    try {
+      const i18n = root.chrome && root.chrome.i18n;
+      if (i18n && typeof i18n.getMessage === 'function') {
+        const subs = substitutions && substitutions.map(String);
+        const message = i18n.getMessage(key, subs);
+        if (message) return message;
+      }
+    } catch (e) {
+      // Fall back to English
+    }
+    return fallback;
+  }
+
+  function formatNumber(n) {
+    let locale = 'en-US';
+    try {
+      const i18n = root.chrome && root.chrome.i18n;
+      if (i18n && typeof i18n.getUILanguage === 'function') locale = i18n.getUILanguage() || locale;
+      return n.toLocaleString(locale);
+    } catch (e) {
+      return n.toLocaleString('en-US');
+    }
+  }
+
   class PhravexaError extends Error {
     constructor(title, message, { isWarning = false, code = 'unknown' } = {}) {
       super(message);
@@ -74,8 +102,8 @@
     const config = PROVIDERS[provider];
     if (!config) {
       throw new PhravexaError(
-        'Unsupported Provider',
-        `Provider '${provider}' is not supported. Please choose OpenAI, Anthropic or DeepSeek in settings.`,
+        t('errUnsupportedProviderTitle', 'Unsupported Provider'),
+        t('errUnsupportedProvider', `Provider '${provider}' is not supported. Please choose OpenAI, Anthropic or DeepSeek in settings.`, [provider]),
         { code: 'unsupported_provider' }
       );
     }
@@ -124,7 +152,7 @@
     let refused = false;
 
     if (!json || typeof json !== 'object') {
-      throw new PhravexaError('Unexpected Response', 'The AI provider returned an unreadable response. Please try again.', { code: 'bad_response' });
+      throw badResponseError();
     }
 
     if (provider === 'anthropic') {
@@ -146,12 +174,23 @@
     }
 
     if (refused && !content.trim()) {
-      throw new PhravexaError('Request Declined', 'The AI provider declined to process this text.', { isWarning: true, code: 'refused' });
+      throw new PhravexaError(t('errRefusedTitle', 'Request Declined'), t('errRefused', 'The AI provider declined to process this text.'), { isWarning: true, code: 'refused' });
     }
     if (!content.trim()) {
-      throw new PhravexaError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
+      throw emptyResultError();
     }
     return { content, truncated };
+  }
+
+  function badResponseError(providerLabel) {
+    const message = providerLabel
+      ? t('errBadResponseFrom', `${providerLabel} returned an unreadable response. Please try again.`, [providerLabel])
+      : t('errBadResponse', 'The AI provider returned an unreadable response. Please try again.');
+    return new PhravexaError(t('errBadResponseTitle', 'Unexpected Response'), message, { code: 'bad_response' });
+  }
+
+  function emptyResultError() {
+    return new PhravexaError(t('errEmptyTitle', 'Empty Result'), t('errEmpty', 'The AI provider returned an empty result. Please try again.'), { code: 'empty_result' });
   }
 
   // Removes wrapping the model sometimes adds and restores the selection's
@@ -196,48 +235,53 @@
   }
 
   // Maps an HTTP error from a provider to a user-facing error.
-  function classifyHttpError(status, bodyText, providerLabel = 'The AI provider') {
+  function classifyHttpError(status, bodyText, providerLabel) {
+    providerLabel = providerLabel || t('providerGeneric', 'The AI provider');
     const detail = extractProviderMessage(bodyText);
     const lowered = detail.toLowerCase();
     const suffix = detail ? ` (${detail.slice(0, 160)})` : '';
 
     if (status === 401 || status === 403) {
-      return new PhravexaError('Invalid API Key', `${providerLabel} rejected your API key. Please check it in Phravexa settings.`, { code: 'auth' });
+      return new PhravexaError(t('errAuthTitle', 'Invalid API Key'), t('errAuth', `${providerLabel} rejected your API key. Please check it in Phravexa settings.`, [providerLabel]), { code: 'auth' });
     }
     if (status === 402 || lowered.includes('insufficient') || lowered.includes('quota') || lowered.includes('credit balance')) {
-      return new PhravexaError('Out of Credit', `${providerLabel} reports that your account has no remaining credit or quota. Add billing credit with the provider and try again.`, { code: 'quota' });
+      return new PhravexaError(t('errQuotaTitle', 'Out of Credit'), t('errQuota', `${providerLabel} reports that your account has no remaining credit or quota. Add billing credit with the provider and try again.`, [providerLabel]), { code: 'quota' });
     }
     if (status === 429) {
-      return new PhravexaError('Rate Limit', `${providerLabel} is rate limiting requests. Please wait a moment and try again.`, { isWarning: true, code: 'rate_limit' });
+      return new PhravexaError(t('errRateLimitTitle', 'Rate Limit'), t('errRateLimit', `${providerLabel} is rate limiting requests. Please wait a moment and try again.`, [providerLabel]), { isWarning: true, code: 'rate_limit' });
     }
     if (status === 404 || (status === 400 && lowered.includes('model') &&
         /(not found|does not exist|invalid|unknown|not supported|not available)/.test(lowered))) {
-      return new PhravexaError('Model Not Available', `The selected model is not available for your account${suffix}. Set a different model in Phravexa settings.`, { code: 'model' });
+      return new PhravexaError(t('errModelTitle', 'Model Not Available'), t('errModel', `The selected model is not available for your account${suffix}. Set a different model in Phravexa settings.`, [suffix]), { code: 'model' });
     }
     if (status === 400 || status === 413 || status === 422) {
-      return new PhravexaError('Request Rejected', `${providerLabel} rejected the request${suffix}.`, { code: 'bad_request' });
+      return new PhravexaError(t('errBadRequestTitle', 'Request Rejected'), t('errBadRequest', `${providerLabel} rejected the request${suffix}.`, [providerLabel, suffix]), { code: 'bad_request' });
     }
     if (status >= 500) {
-      return new PhravexaError('Provider Unavailable', `${providerLabel} is temporarily unavailable (HTTP ${status}). Please try again shortly.`, { isWarning: true, code: 'server' });
+      return new PhravexaError(t('errServerTitle', 'Provider Unavailable'), t('errServer', `${providerLabel} is temporarily unavailable (HTTP ${status}). Please try again shortly.`, [providerLabel, status]), { isWarning: true, code: 'server' });
     }
-    return new PhravexaError('Translation Error', `Request failed with HTTP ${status}${suffix}.`, { code: 'http' });
+    return new PhravexaError(t('errHttpTitle', 'Translation Error'), t('errHttp', `Request failed with HTTP ${status}${suffix}.`, [status, suffix]), { code: 'http' });
   }
 
   function classifyNetworkError(err) {
     if (err && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
-      return new PhravexaError('Request Timed Out', 'The AI provider did not respond in time. Please try again.', { isWarning: true, code: 'timeout' });
+      return new PhravexaError(t('errTimeoutTitle', 'Request Timed Out'), t('errTimeout', 'The AI provider did not respond in time. Please try again.'), { isWarning: true, code: 'timeout' });
     }
-    return new PhravexaError('Network Error', 'Could not reach the AI provider. Please check your internet connection.', { isWarning: true, code: 'network' });
+    return new PhravexaError(t('errNetworkTitle', 'Network Error'), t('errNetwork', 'Could not reach the AI provider. Please check your internet connection.'), { isWarning: true, code: 'network' });
   }
 
   function validateSelection(selection) {
+    if (selection && selection.blocked === 'password') {
+      throw new PhravexaError(t('errPasswordTitle', 'Password Field'), t('errPassword', 'Phravexa never reads or replaces text in password fields.'), { isWarning: true, code: 'password_field' });
+    }
     const text = selection && typeof selection.text === 'string' ? selection.text : '';
     if (!text.trim()) {
-      throw new PhravexaError('No Text Selected', 'Select some text first, then right-click and choose a language.', { isWarning: true, code: 'empty_selection' });
+      throw new PhravexaError(t('errNoSelectionTitle', 'No Text Selected'), t('errNoSelection', 'Select some text first, then right-click and choose a language, or press the Phravexa shortcut.'), { isWarning: true, code: 'empty_selection' });
     }
     const input = selection.html || text;
     if (input.length > MAX_INPUT_CHARS) {
-      throw new PhravexaError('Selection Too Long', `Please select less text (up to about ${MAX_INPUT_CHARS.toLocaleString('en-US')} characters).`, { isWarning: true, code: 'too_long' });
+      const max = formatNumber(MAX_INPUT_CHARS);
+      throw new PhravexaError(t('errTooLongTitle', 'Selection Too Long'), t('errTooLong', `Please select less text (up to about ${max} characters).`, [max]), { isWarning: true, code: 'too_long' });
     }
   }
 
@@ -261,6 +305,9 @@
     MAX_INPUT_CHARS,
     MAX_OUTPUT_TOKENS,
     PhravexaError,
+    t,
+    badResponseError,
+    emptyResultError,
     isRephrase,
     buildPrompt,
     resolveModel,

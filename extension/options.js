@@ -1,4 +1,5 @@
 const { PROVIDERS, normalizeLanguages } = globalThis.PhravexaCore;
+const { msg } = globalThis.PhravexaI18n;
 
 const providerSelect = document.getElementById('provider');
 const apiKeyInput = document.getElementById('apiKey');
@@ -64,10 +65,12 @@ function renderLanguages() {
   languages.forEach((lang, index) => {
     const li = document.createElement('li');
     li.textContent = lang;
-    const removeBtn = document.createElement('span');
-    removeBtn.textContent = 'X';
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '\u00D7';
     removeBtn.className = 'remove-lang';
-    removeBtn.title = `Remove ${lang}`;
+    removeBtn.title = msg('optRemoveLanguage', `Remove ${lang}`, [lang]);
+    removeBtn.setAttribute('aria-label', removeBtn.title);
     removeBtn.dataset.index = index;
     li.appendChild(removeBtn);
     languageList.appendChild(li);
@@ -109,11 +112,11 @@ settingsForm.addEventListener('submit', async (e) => {
     await chrome.storage.sync.set({ provider, models, tone: toneInput.value.trim(), languages });
     await chrome.storage.sync.remove(['apiKeys', 'apiKey']);
     statusEl.style.color = '#2e7d32';
-    statusEl.textContent = 'Settings saved.';
+    statusEl.textContent = msg('optSaved', 'Settings saved.');
     chrome.runtime.sendMessage({ type: 'settings-updated' }).catch(() => {});
   } catch (err) {
     statusEl.style.color = '#c62828';
-    statusEl.textContent = 'Could not save settings: ' + err.message;
+    statusEl.textContent = msg('optSaveFailed', `Could not save settings: ${err.message}`, [err.message]);
   }
 });
 

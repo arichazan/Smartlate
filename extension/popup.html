@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
   <title>Phravexa</title>
   <style>
     body {
@@ -47,21 +48,46 @@
     #normal-message {
       text-align: center;
     }
+    .shortcut {
+      font-size: 13px;
+      color: #444;
+      text-align: center;
+      margin: 8px 0;
+      line-height: 1.4;
+    }
+    .shortcut kbd {
+      font-family: inherit;
+      background: #f1f3f4;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 0 4px;
+    }
+    #change-shortcut {
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
   <h3>Phravexa</h3>
 
   <div id="warning-message" class="warning" style="display: none;">
-    <div><strong>No API Key Configured</strong></div>
-    <p style="margin: 8px 0 0 0; font-size: 14px;">Please go to Settings to add an API key for your chosen provider.</p>
+    <div><strong data-i18n="popupNoKeyTitle">No API Key Configured</strong></div>
+    <p style="margin: 8px 0 0 0; font-size: 14px;" data-i18n="popupNoKeyBody">Please go to Settings to add an API key for your chosen provider.</p>
   </div>
 
   <div id="normal-message" class="message">
-    <p>Select text on a page and right-click to translate or rephrase.</p>
+    <p data-i18n="popupHowTo">Select text on a page and right-click to translate or rephrase.</p>
   </div>
 
-  <a id="go-to-options" class="settings-link" href="#">Go to Settings</a>
+  <div class="shortcut">
+    <div id="shortcut-key"></div>
+    <div id="shortcut-language"></div>
+    <a id="change-shortcut" href="#" data-i18n="popupChangeShortcut">Change shortcut</a>
+  </div>
+
+  <a id="go-to-options" class="settings-link" href="#" data-i18n="popupGoToSettings">Go to Settings</a>
+  <script src="lib/core.js"></script>
+  <script src="lib/i18n.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

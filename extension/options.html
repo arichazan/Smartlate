@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Phravexa Settings</title>
+  <meta charset="utf-8">
+  <title data-i18n="optPageTitle">Phravexa Settings</title>
   <style>
     body {
       font-family: sans-serif;
@@ -48,18 +49,23 @@
     }
     .remove-lang {
       cursor: pointer;
-      color: red;
+      color: #c62828;
+      background: none;
       font-weight: bold;
+      padding: 2px 8px;
+    }
+    .remove-lang:hover, .remove-lang:focus-visible {
+      background-color: #fdecea;
     }
   </style>
 </head>
 <body>
-  <h1>Phravexa Settings</h1>
+  <h1 data-i18n="optPageTitle">Phravexa Settings</h1>
 
   <form id="settings-form">
-    <h2>AI Provider</h2>
+    <h2 data-i18n="optProviderSection">AI Provider</h2>
     <div class="form-group">
-      <label for="provider">Active Provider</label>
+      <label for="provider" data-i18n="optProviderLabel">Active Provider</label>
       <select id="provider">
         <option value="openai">OpenAI</option>
         <option value="anthropic">Anthropic (Claude)</option>
@@ -68,43 +74,44 @@
     </div>
 
     <div class="form-group">
-      <label for="apiKey">API Key</label>
-      <input type="password" id="apiKey" placeholder="Enter your API key">
+      <label for="apiKey" data-i18n="optApiKeyLabel">API Key</label>
+      <input type="password" id="apiKey" placeholder="Enter your API key" data-i18n-placeholder="optApiKeyPlaceholder" autocomplete="off">
       <div id="api-key-instructions" style="margin-top: 10px; font-size: 13px; color: #666;">
-        <strong>How to get an API key:</strong>
+        <strong data-i18n="optHowToGetKey">How to get an API key:</strong>
         <ul style="margin: 5px 0; padding-left: 20px;">
-          <li id="openai-instructions"><a href="https://platform.openai.com/api-keys" target="_blank">Instructions for OpenAI</a></li>
-          <li id="anthropic-instructions" style="display: none;"><a href="https://console.anthropic.com/settings/keys" target="_blank">Instructions for Anthropic (Claude)</a></li>
-          <li id="deepseek-instructions" style="display: none;"><a href="https://platform.deepseek.com/api_keys" target="_blank">Instructions for DeepSeek</a></li>
+          <li id="openai-instructions"><a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" data-i18n="optInstructionsOpenai">Instructions for OpenAI</a></li>
+          <li id="anthropic-instructions" style="display: none;"><a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" data-i18n="optInstructionsAnthropic">Instructions for Anthropic (Claude)</a></li>
+          <li id="deepseek-instructions" style="display: none;"><a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener" data-i18n="optInstructionsDeepseek">Instructions for DeepSeek</a></li>
         </ul>
-        Your key is stored only on this device and is sent only to the provider you select.
+        <span data-i18n="optKeyPrivacy">Your key is stored only on this device and is sent only to the provider you select.</span>
       </div>
     </div>
     <div class="form-group">
-      <label for="model">Model (optional)</label>
-      <input type="text" id="model" placeholder="Leave empty for the default">
-      <div style="margin-top: 5px; font-size: 13px; color: #666;">Default: <code id="default-model"></code>. Only change this if your provider has retired the default or you prefer another model.</div>
+      <label for="model" data-i18n="optModelLabel">Model (optional)</label>
+      <input type="text" id="model" placeholder="Leave empty for the default" data-i18n-placeholder="optModelPlaceholder">
+      <div style="margin-top: 5px; font-size: 13px; color: #666;"><span data-i18n="optModelDefault">Default:</span> <code id="default-model"></code>. <span data-i18n="optModelHint">Only change this if your provider has retired the default or you prefer another model.</span></div>
     </div>
 
-    <h2>Special Instructions</h2>
+    <h2 data-i18n="optInstructionsSection">Special Instructions</h2>
     <div class="form-group">
-      <label for="tone">Special Instructions</label>
-      <input type="text" id="tone" placeholder="e.g., Professional, polite but friendly">
+      <label for="tone" data-i18n="optInstructionsSection">Special Instructions</label>
+      <input type="text" id="tone" dir="auto" placeholder="e.g., Professional, polite but friendly" data-i18n-placeholder="optTonePlaceholder">
     </div>
 
-    <h2>Translation Languages</h2>
+    <h2 data-i18n="optLanguagesSection">Translation Languages</h2>
     <div class="form-group">
-      <label for="new-language">Add Language</label>
-      <input type="text" id="new-language" placeholder="e.g., Spanish">
-      <button type="button" id="add-language">Add</button>
+      <label for="new-language" data-i18n="optAddLanguageLabel">Add Language</label>
+      <input type="text" id="new-language" dir="auto" placeholder="e.g., Spanish" data-i18n-placeholder="optAddLanguagePlaceholder">
+      <button type="button" id="add-language" data-i18n="optAddButton">Add</button>
     </div>
     <ul id="language-list"></ul>
 
-    <button type="submit">Save Settings</button>
+    <button type="submit" data-i18n="optSave">Save Settings</button>
   </form>
 
   <p id="status" role="status" style="color: #2e7d32;"></p>
   <script src="lib/core.js"></script>
+  <script src="lib/i18n.js"></script>
   <script src="options.js"></script>
 </body>
 </html>
