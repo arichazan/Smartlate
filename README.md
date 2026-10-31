@@ -12,7 +12,7 @@ A Chrome extension (Manifest V3) that translates or rephrases selected text with
 
 - **Multi-language Translation**: Translate selected text to any configured language
 - **AI-Powered Rephrasing**: Rephrase text with customizable tone (professional, casual, concise, etc.)
-- **Multiple AI Providers**: Supports OpenAI, Anthropic (Claude), and DeepSeek
+- **Multiple AI Providers**: Supports OpenAI, Anthropic, and DeepSeek
 - **One-Click Operation**: Right-click on selected text and choose your target language
 - **Keeps Formatting**: Page selections keep headings, bold, links, lists and tables (copied as rich text); text-box selections keep line breaks and indentation
 - **Clipboard Integration**: The result is copied to the clipboard and previewed in a small popup on the page
