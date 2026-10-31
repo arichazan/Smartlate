@@ -1,6 +1,6 @@
 # Privacy Policy for Phravexa
 
-**Last Updated:** November 5, 2024
+**Last Updated:** October 31, 2026
 
 ## Overview
 
@@ -54,6 +54,7 @@ The Extension requests the following permissions:
 
 - **contextMenus**: To add translation options to your right-click menu
 - **storage**: To securely save your API key and preferences locally on your device
+- **scripting**: To read the text you select, show progress and confirmation messages on the page, and write the result back into the text box or editor where you selected the text
 - **notifications**: To confirm when translated text is copied to your clipboard
 - **activeTab**: To access the text you select on the current webpage
 - **offscreen**: To use Chrome's clipboard API for copying translated text

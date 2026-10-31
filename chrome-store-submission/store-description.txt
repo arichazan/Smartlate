@@ -4,6 +4,9 @@ Transform your text with AI-powered translation and rephrasing. Phravexa makes i
 
 Key Features:
 
+✍️ Replaces Text In Place (New)
+Select text in any text box or email editor, choose a language, and it is replaced with the translation right where you're typing - no copy and paste. Undo with Ctrl/Cmd+Z. Text selected elsewhere on a page is copied to your clipboard as before.
+
 🌍 Multi-Language Translation
 Translate text to any language you configure - Spanish, French, German, Japanese, and more. Simply select text, right-click, and choose your target language.
 
@@ -21,13 +24,14 @@ Choose your preferred AI service:
 - DeepSeek
 
 📝 Keeps Your Formatting
-Bold, italics, links, headings, lists, tables and line breaks are preserved - paste the translation straight into Gmail, Google Docs, Word or Slack and it looks just like the original.
+Bold, italics, links, headings, lists, tables and line breaks are preserved - the translation looks just like the original, whether it's replaced in place or pasted into Gmail, Google Docs, Word or Slack.
 
 ⚡ One-Click Operation
 1. Select any text on any webpage
 2. Right-click and choose your language
 3. Get perfectly translated and rephrased text
-4. Automatically copied to your clipboard
+4. In a text box or email editor, your text is replaced in place - no pasting needed (Ctrl/Cmd+Z to undo)
+5. The result is also copied to your clipboard, ready to paste anywhere
 
 🔒 Privacy First
 - Your API keys are stored securely in local Chrome storage
