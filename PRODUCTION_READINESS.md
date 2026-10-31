@@ -85,7 +85,7 @@ Score unchanged at **8/10**: these are quality improvements; the two remaining p
 | In-place edge cases | Password fields: never read, sent or replaced ("Password Field" warning; also re-checked before writing). Only `text/search/url/tel` inputs and textareas are replaced (email/number have no selection API → clipboard only). Read-only/disabled fields are not targeted. Very large selections skip the HTML copy and keep no target. `contenteditable="plaintext-only"` gets plain text. Focus inside open shadow roots is followed. Context-menu `frameId` is used for read and write. | e2e: password (menu and shortcut, no request made), email and read-only (copied, unchanged), oversized textarea and select-all (rejected, no HTML built, no request), context menu in an iframe replaces in that frame. |
 | Build | Ships `_locales/*` and `lib/i18n.js`; `verify-package.js` resolves `__MSG_` names, checks each locale and the fixed store name. Version 1.3.0. No new permissions. | `./extension/build.sh` → 20 files verified. |
 
-Tests: `npm test` → 28 unit + 22 e2e passing locally. CI: see below.
+Tests: `npm test` → 28 unit + 22 e2e passing locally. CI on the code commit: https://github.com/arichazan/Smartlate/actions/runs/41245580182 (success: unit, e2e in Chromium, build and package verification).
 
 ## 4. Chrome Web Store submission checklist
 
