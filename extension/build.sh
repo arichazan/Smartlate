@@ -1,78 +1,53 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Smartlate build script: creates the Chrome Web Store ZIP in dist/ and
+# verifies its contents. Usage: ./extension/build.sh (from any directory)
+set -euo pipefail
 
-# Phravexa Extension Build Script
-# Creates a production-ready ZIP file for Chrome Web Store submission
+EXT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${EXT_DIR}/.." && pwd)"
+DIST_DIR="${ROOT_DIR}/dist"
 
-set -e  # Exit on any error
+VERSION="$(node -p "require('${EXT_DIR}/manifest.json').version")"
+ZIP_NAME="smartlate-${VERSION}.zip"
+ZIP_PATH="${DIST_DIR}/${ZIP_NAME}"
 
-# Colors for output
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-
-echo -e "${BLUE}Building Phravexa Extension...${NC}"
-
-# Get version from manifest.json
-VERSION=$(grep -o '"version": "[^"]*"' manifest.json | cut -d'"' -f4)
-echo -e "${BLUE}Version: ${VERSION}${NC}"
-
-# Create build directory
-BUILD_DIR="build"
-DIST_DIR="../chrome-store-submission"
-ZIP_NAME="phravexa-${VERSION}.zip"
-
-echo -e "${BLUE}Creating build directory...${NC}"
-rm -rf "${BUILD_DIR}"
-mkdir -p "${BUILD_DIR}"
-
-# Copy only necessary files for the extension
-echo -e "${BLUE}Copying extension files...${NC}"
-
-# List of files to include in the extension package
+# Files shipped in the store package. Anything not listed here is left out.
 FILES=(
-  "manifest.json"
-  "background.js"
-  "content.js"
-  "content.css"
-  "offscreen.html"
-  "offscreen.js"
-  "options.html"
-  "options.js"
-  "popup.html"
-  "popup.js"
+  manifest.json
+  background.js
+  lib/core.js
+  content.js
+  content.css
+  offscreen.html
+  offscreen.js
+  options.html
+  options.js
+  popup.html
+  popup.js
+  icons/icon16.png
+  icons/icon48.png
+  icons/icon128.png
 )
 
+echo "Building Smartlate ${VERSION}"
+STAGE="$(mktemp -d)"
+trap 'rm -rf "${STAGE}"' EXIT
+
 for file in "${FILES[@]}"; do
-  if [ -f "$file" ]; then
-    cp "$file" "${BUILD_DIR}/"
-  else
-    echo -e "${RED}Warning: $file not found${NC}"
+  if [ ! -f "${EXT_DIR}/${file}" ]; then
+    echo "Missing file: ${file}" >&2
+    exit 1
   fi
+  mkdir -p "${STAGE}/$(dirname "${file}")"
+  cp "${EXT_DIR}/${file}" "${STAGE}/${file}"
 done
 
-# Copy icons directory
-echo -e "${BLUE}Copying icons...${NC}"
-cp -r icons "${BUILD_DIR}/"
-
-# Create distribution directory if it doesn't exist
 mkdir -p "${DIST_DIR}"
+rm -f "${ZIP_PATH}"
+# -X drops extra file attributes; fixed timestamps keep the ZIP reproducible
+find "${STAGE}" -exec touch -t 202001010000 {} +
+(cd "${STAGE}" && zip -q -X -r "${ZIP_PATH}" "${FILES[@]}")
 
-# Create ZIP file
-echo -e "${BLUE}Creating ZIP file: ${ZIP_NAME}${NC}"
-cd "${BUILD_DIR}"
-zip -r "../${DIST_DIR}/${ZIP_NAME}" . -x "*.DS_Store"
-cd ..
+node "${ROOT_DIR}/scripts/verify-package.js" "${ZIP_PATH}" "${FILES[@]}"
 
-# Clean up build directory
-echo -e "${BLUE}Cleaning up...${NC}"
-rm -rf "${BUILD_DIR}"
-
-# Calculate ZIP size
-ZIP_SIZE=$(du -h "${DIST_DIR}/${ZIP_NAME}" | cut -f1)
-
-echo -e "${GREEN}✅ Build complete!${NC}"
-echo -e "${GREEN}Package: ${DIST_DIR}/${ZIP_NAME}${NC}"
-echo -e "${GREEN}Size: ${ZIP_SIZE}${NC}"
-echo ""
-echo -e "${BLUE}Ready to upload to Chrome Web Store!${NC}"
+echo "Package: ${ZIP_PATH} ($(du -h "${ZIP_PATH}" | cut -f1))"
