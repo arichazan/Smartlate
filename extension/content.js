@@ -13,7 +13,7 @@ if (!window.phravexaContentScriptLoaded) {
             showLoadingPopup(message.label);
             sendResponse({ success: true });
         } else if (message.type === 'show-popup' && message.text) {
-            showPopup(message.text, message.truncated);
+            showPopup(message.text, message.truncated, message.title);
             sendResponse({ success: true });
         } else if (message.type === 'show-error') {
             showErrorPopup(message.title, message.message, message.isWarning);
@@ -49,7 +49,7 @@ function showLoadingPopup(label) {
     currentPopup = popup;
 }
 
-function showPopup(text, truncated = false) {
+function showPopup(text, truncated = false, title = 'Copied to clipboard') {
     // Remove any existing popup
     if (currentPopup && currentPopup.parentNode) {
         currentPopup.remove();
@@ -64,7 +64,7 @@ function showPopup(text, truncated = false) {
     header.className = 'ai-text-tuner-popup-header';
     header.appendChild(makeIcon('\u2713'));
     const headerText = document.createElement('span');
-    headerText.textContent = truncated ? 'Copied to clipboard (may be cut short)' : 'Copied to clipboard';
+    headerText.textContent = truncated ? `${title} (may be cut short)` : title;
     header.appendChild(headerText);
 
     // Create content

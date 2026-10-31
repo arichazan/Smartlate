@@ -13,7 +13,7 @@ Copy-paste text for the **Privacy practices** tab. The full release checklist is
 |---|---|
 | `contextMenus` | Adds one menu item per configured language to the right-click menu for selected text. This menu is the extension's only entry point. |
 | `activeTab` | When the user clicks a Phravexa menu item, grants temporary access to that tab so the extension can read the current selection with its formatting and show a short status popup. No access to other tabs or to pages the user does not act on. |
-| `scripting` | Used together with activeTab to run the selection reader and inject the status popup into the tab the user clicked in. |
+| `scripting` | Used together with activeTab to run the selection reader, inject the status popup, and write the result back into the text box or editor the user selected text in, in the tab the user clicked in. |
 | `storage` | Saves the user's API key (local to the device) and preferences: provider, optional model, tone instructions and language list. |
 | `offscreen` | Manifest V3 service workers cannot access the clipboard. An offscreen document (reason CLIPBOARD) is opened briefly to write the result and closed right after. |
 | `clipboardWrite` | Writes the translated or rephrased result to the clipboard, as rich text (HTML) and plain text. |

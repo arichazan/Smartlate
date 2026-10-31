@@ -17,6 +17,8 @@ const PAGE_HTML = `<!doctype html><html><head><meta charset="utf-8"><title>Fixtu
 <textarea id="plain">Line one
 
 Line two</textarea>
+<input id="field" value="Good morning team">
+<div id="editor" contenteditable="true"><p>Hello <b>world</b></p></div>
 </body></html>`;
 
 let context, worker, server, baseUrl, userDataDir, extDir;
@@ -92,7 +94,7 @@ async function runMenuAction(page, language, selectionText = 'ignored') {
     const [tab] = await chrome.tabs.query({ url });
     const info = { frameId: 0, selectionText, menuItemId: `lang-${language}` };
     const selection = await getSelection(info, tab);
-    await handleTextTransformation(selection, language, tab);
+    await handleTextTransformation(selection, language, tab, 0);
   }, { url: baseUrl, language, selectionText });
 }
 
@@ -117,7 +119,7 @@ test('service worker boots with the core module and defaults', async () => {
   assert.equal(state.hasCore, true);
   assert.deepEqual(state.sync.languages, ['German', 'Spanish', 'French', 'Chinese']);
   assert.ok(state.sync.tone.length > 0);
-  assert.equal(state.manifest.name, 'Phravexa – AI Translate & Rephrase');
+  assert.equal(state.manifest.name, 'AI Translate & Rephrase - Phravexa');
 });
 
 test('formatted selection is translated, copied as HTML and confirmed in the page', async () => {
@@ -200,6 +202,56 @@ for (const [name, response, expected] of [
     await page.close();
   });
 }
+
+test('selection in an input is replaced in place and also copied', async () => {
+  await configure({ provider: 'openai', apiKeys: { openai: 'sk-test' } });
+  await stubProvider({ body: { choices: [{ message: { content: 'Buenos días' }, finish_reason: 'stop' }] } });
+  const page = await openFixture();
+  await page.evaluate(() => {
+    const f = document.getElementById('field');
+    f.focus();
+    f.setSelectionRange(0, 12);
+  });
+  await runMenuAction(page, 'Spanish');
+  assert.match(await popupText(page), /Text replaced/);
+  assert.equal(await page.inputValue('#field'), 'Buenos días team');
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'Buenos días');
+  await page.close();
+});
+
+test('selection in a rich-text editor is replaced in place', async () => {
+  await configure({ provider: 'openai', apiKeys: { openai: 'sk-test' } });
+  await stubProvider({ body: { choices: [{ message: { content: 'mundo' }, finish_reason: 'stop' }] } });
+  const page = await openFixture();
+  await page.evaluate(() => {
+    const b = document.querySelector('#editor b');
+    document.getElementById('editor').focus();
+    const r = document.createRange();
+    r.selectNodeContents(b);
+    const s = getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+  });
+  await runMenuAction(page, 'Spanish');
+  assert.match(await popupText(page), /Text replaced/);
+  assert.match(await page.locator('#editor').innerText(), /Hello\s+mundo/);
+  await page.close();
+});
+
+test('a truncated result is copied but never replaces the selection', async () => {
+  await configure({ provider: 'openai', apiKeys: { openai: 'sk-test' } });
+  await stubProvider({ body: { choices: [{ message: { content: 'Buenos' }, finish_reason: 'length' }] } });
+  const page = await openFixture();
+  await page.evaluate(() => {
+    const f = document.getElementById('field');
+    f.focus();
+    f.setSelectionRange(0, 12);
+  });
+  await runMenuAction(page, 'Spanish');
+  assert.match(await popupText(page), /Copied to clipboard/);
+  assert.equal(await page.inputValue('#field'), 'Good morning team');
+  await page.close();
+});
 
 test('missing API key and empty selection show warnings without calling the provider', async () => {
   await configure({ provider: 'openai', apiKeys: {} });

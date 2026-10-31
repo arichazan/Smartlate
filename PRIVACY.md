@@ -16,7 +16,7 @@
 | Data | When | Where it goes | Kept for |
 |---|---|---|---|
 | **Selected text** (plain text, or the HTML markup of a selection on a web page so formatting can be kept) | Only when you pick a language from the Phravexa right-click menu | Sent over HTTPS to your chosen AI provider, together with the translation/rephrasing instructions | Not stored by Phravexa. It exists in memory only while the request runs. |
-| **Translated / rephrased result** | After the provider replies | Written to your clipboard and shown briefly in a small popup on the page | Not stored by Phravexa. It stays on your clipboard until you copy something else. |
+| **Translated / rephrased result** | After the provider replies | Written back into the text box or editor you selected it in (if any), copied to your clipboard and shown briefly in a small popup on the page | Not stored by Phravexa. It stays on your clipboard until you copy something else. |
 | **API key** for OpenAI, Anthropic or DeepSeek | When you save it on the settings page | Stored in `chrome.storage.local` on this device only. Sent only to the matching provider, as the request's authentication header. | Until you delete it in settings or remove the extension. |
 | **Preferences**: chosen provider, optional model name, tone/special instructions, language list | When you save settings | Stored in `chrome.storage.sync`. If you use Chrome Sync, Google syncs them between browsers signed in to your Google account. | Until you change them or remove the extension. |
 

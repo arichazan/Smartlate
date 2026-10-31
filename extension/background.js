@@ -103,7 +103,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (typeof info.menuItemId !== 'string' || !info.menuItemId.startsWith('lang-')) return;
   const language = info.menuItemId.substring('lang-'.length);
   getSelection(info, tab)
-    .then(selection => handleTextTransformation(selection, language, tab))
+    .then(selection => handleTextTransformation(selection, language, tab, info.frameId || 0))
     .catch(err => {
       console.error('Phravexa failed:', err);
       showErrorMessage(tab, 'Unexpected Error', 'Something went wrong. Please try again.');
@@ -146,11 +146,20 @@ async function getSelection(info, tab) {
 
 // Runs in the page. Must be self-contained.
 function readSelectionInPage() {
+  // Remember where an editable selection lives so the result can be written back
+  // in place later (scripts injected into this frame share this window)
+  window.__phravexaTarget = null;
+
   const el = document.activeElement;
   try {
     if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
         typeof el.selectionStart === 'number' && el.selectionEnd > el.selectionStart) {
-      return { text: el.value.substring(el.selectionStart, el.selectionEnd), html: null };
+      const original = el.value.substring(el.selectionStart, el.selectionEnd);
+      window.__phravexaTarget = {
+        kind: 'input', el, original,
+        start: el.selectionStart, end: el.selectionEnd
+      };
+      return { text: original, html: null };
     }
   } catch (e) {
     // Some input types don't support selection, fall through
@@ -160,6 +169,27 @@ function readSelectionInPage() {
   const text = selection ? selection.toString() : '';
   if (!selection || selection.rangeCount === 0) {
     return { text, html: null };
+  }
+
+  // Selection inside a rich-text editor (contenteditable / designMode)
+  let editableHost = null;
+  if (selection.rangeCount === 1) {
+    const range = selection.getRangeAt(0);
+    let node = range.commonAncestorContainer;
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      node = node.parentElement;
+    }
+    if (node && node.isContentEditable) {
+      editableHost = node;
+      while (editableHost.parentElement && editableHost.parentElement.isContentEditable) {
+        editableHost = editableHost.parentElement;
+      }
+      const savedRange = range.cloneRange();
+      window.__phravexaTarget = {
+        kind: 'editable', host: editableHost, range: savedRange,
+        original: savedRange.toString()
+      };
+    }
   }
 
   const container = document.createElement('div');
@@ -176,7 +206,9 @@ function readSelectionInPage() {
     if (ancestor.nodeType !== Node.ELEMENT_NODE) {
       ancestor = ancestor.parentElement;
     }
-    while (ancestor && wrapperTags.includes(ancestor.tagName)) {
+    // (skipped for editors: the result is inserted back inside those same
+    // wrappers, so including them would nest e.g. a <li> inside the <li>)
+    while (!editableHost && ancestor && wrapperTags.includes(ancestor.tagName)) {
       const wrapper = ancestor.cloneNode(false);
       wrapper.appendChild(fragment);
       fragment = wrapper;
@@ -208,11 +240,95 @@ function readSelectionInPage() {
   return { text, html };
 }
 
+// Write the result back over the original selection when it came from a text box or
+// rich-text editor. Returns true only if the page content actually changed; otherwise
+// (static page text, unsupported editor, or the text was edited meanwhile) the caller
+// falls back to the clipboard alone.
+async function replaceSelectionInPage(tab, frameId, text, html) {
+    if (!canScript(tab)) {
+        return false;
+    }
+    if ((!text || !text.trim()) && (!html || !html.trim())) {
+        return false;
+    }
+    try {
+        const [injection] = await chrome.scripting.executeScript({
+            target: { tabId: tab.id, frameIds: [frameId] },
+            args: [text, html],
+            func: async (text, html) => {
+                const target = window.__phravexaTarget;
+                window.__phravexaTarget = null;
+                if (!target) {
+                    return false;
+                }
+                // Let editors that apply edits asynchronously (e.g. via beforeinput) catch up
+                const settle = () => new Promise(resolve => setTimeout(resolve, 50));
+
+                if (target.kind === 'input') {
+                    const el = target.el;
+                    if (!el.isConnected || el.disabled || el.readOnly || text === null) {
+                        return false;
+                    }
+                    // Don't overwrite if the user changed the text while we were waiting
+                    if (el.value.substring(target.start, target.end) !== target.original) {
+                        return false;
+                    }
+                    if (text === target.original) {
+                        return true;
+                    }
+                    const before = el.value;
+                    el.focus();
+                    el.setSelectionRange(target.start, target.end);
+                    // execCommand keeps native undo (Cmd/Ctrl+Z) and fires real input events,
+                    // so frameworks like React pick up the change
+                    document.execCommand('insertText', false, text);
+                    await settle();
+                    if (el.value !== before) {
+                        return true;
+                    }
+                    el.setRangeText(text, target.start, target.end, 'end');
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    return el.value !== before;
+                }
+
+                if (target.kind === 'editable') {
+                    const host = target.host;
+                    const range = target.range;
+                    if (!host.isConnected || !host.isContentEditable) {
+                        return false;
+                    }
+                    if (range.toString() !== target.original) {
+                        return false;
+                    }
+                    const before = host.innerHTML;
+                    host.focus();
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    if (html) {
+                        document.execCommand('insertHTML', false, html);
+                    } else {
+                        document.execCommand('insertText', false, text);
+                    }
+                    await settle();
+                    return host.innerHTML !== before;
+                }
+                return false;
+            }
+        });
+        return Boolean(injection && injection.result === true);
+    } catch (err) {
+        console.log('Could not replace text in page, using clipboard only:', err);
+        return false;
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Translate / rephrase
 // ---------------------------------------------------------------------------
 
-async function handleTextTransformation(selection, language, tab) {
+async function handleTextTransformation(selection, language, tab, frameId = 0) {
   try {
     validateSelection(selection);
 
@@ -233,10 +349,17 @@ async function handleTextTransformation(selection, language, tab) {
     const raw = await callProvider(settings, prompt);
     const cleaned = cleanResult(raw.content, { input, isHtml });
 
+    const text = isHtml ? null : cleaned;
+    const html = isHtml ? cleaned : null;
+    // Write the result back over the selection in text boxes and editors. Skip it when
+    // the provider cut the result short, so a partial answer never replaces the user's text.
+    const replaced = raw.truncated ? false : await replaceSelectionInPage(tab, frameId, text, html);
+
     await copyToClipboardAndNotify(tab, {
-      text: isHtml ? null : cleaned,
-      html: isHtml ? cleaned : null,
-      message: `Text ${resultName} and copied to clipboard`,
+      text,
+      html,
+      message: replaced ? `Text ${resultName}, replaced and copied to clipboard` : `Text ${resultName} and copied to clipboard`,
+      title: replaced ? 'Text replaced (also copied)' : 'Copied to clipboard',
       truncated: raw.truncated
     });
   } catch (err) {
@@ -353,7 +476,7 @@ function writeClipboard(text, html) {
   return job;
 }
 
-async function copyToClipboardAndNotify(tab, { text, html, message, truncated }) {
+async function copyToClipboardAndNotify(tab, { text, html, message, title, truncated }) {
   if ((!text || !text.trim()) && (!html || !html.trim())) {
     throw new PhravexaError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
   }
@@ -367,7 +490,7 @@ async function copyToClipboardAndNotify(tab, { text, html, message, truncated })
   }
 
   const preview = (response && response.text) || text || '';
-  const shown = await sendToPage(tab, { type: 'show-popup', text: preview, truncated: Boolean(truncated) });
+  const shown = await sendToPage(tab, { type: 'show-popup', text: preview, title, truncated: Boolean(truncated) });
   if (!shown) {
     notify('Phravexa', `${message}.${truncated ? ' The result may be cut short.' : ''}`);
   }

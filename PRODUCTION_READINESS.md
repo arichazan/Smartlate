@@ -11,7 +11,7 @@ Before, the Anthropic provider could not work because its default model had been
 ## 2. What was done
 
 ### Name and version
-- Unified the name to **Phravexa** (the owner's chosen brand; the repo and landing slug were previously "Smartlate") in the manifest (`Phravexa – AI Translate & Rephrase`, `short_name: Phravexa`), settings page, popup, content script, README, store texts, privacy policy and promo tiles.
+- Unified the name to **Phravexa** (the owner's chosen brand; the repo and landing slug were previously "Smartlate") in the manifest (store name `AI Translate & Rephrase - Phravexa`, `short_name: Phravexa`), settings page, popup, content script, README, store texts, privacy policy and promo tiles.
 - Version bumped from 1.1.0 to **1.2.0**. The build now writes `dist/phravexa-1.2.0.zip`.
 - Re-rendered the three promo images (`440x280.png`, `920x680.png`, `1400x560.png`) from the renamed HTML tiles.
 

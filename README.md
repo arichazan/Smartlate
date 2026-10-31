@@ -15,7 +15,8 @@ A Chrome extension (Manifest V3) that translates or rephrases selected text with
 - **Multiple AI Providers**: Supports OpenAI, Anthropic, and DeepSeek
 - **One-Click Operation**: Right-click on selected text and choose your target language
 - **Keeps Formatting**: Page selections keep headings, bold, links, lists and tables (copied as rich text); text-box selections keep line breaks and indentation
-- **Clipboard Integration**: The result is copied to the clipboard and previewed in a small popup on the page
+- **In-Place Replacement**: Text selected in a text box or editor is replaced with the result directly (Cmd/Ctrl+Z undoes it). Truncated results are never written back
+- **Clipboard Integration**: The result is also copied to the clipboard and previewed in a small popup on the page
 - **Simple Menu**: Flat menu structure with all languages at the top level
 - **Clear Errors**: Invalid key, no credit, rate limits, unknown model and network problems are explained on the page
 
@@ -52,7 +53,7 @@ Install from the Chrome Web Store, or for development:
 3. Choose a language from the menu:
    - **English**: Rephrase in English with your chosen tone
    - **Other Languages**: Translate to that language AND rephrase with your tone
-4. The result is automatically copied to your clipboard
+4. In a text box or editor the selection is replaced with the result; it is also copied to your clipboard
 5. Paste anywhere with `Cmd+V` (Mac) or `Ctrl+V` (Windows)
 
 ## How It Works

@@ -4,7 +4,7 @@ Copy-paste source for the Chrome Web Store Developer Dashboard (Store listing ta
 The plain-text description below is also in `store-description.txt`.
 
 ## Name (from manifest, 75 characters max)
-Phravexa – AI Translate & Rephrase
+AI Translate & Rephrase - Phravexa
 
 ## Summary / short description (from manifest, 132 characters max)
 Right-click any selected text to translate or rephrase it with your own OpenAI, Anthropic or DeepSeek key. Formatting is kept.
@@ -19,7 +19,7 @@ Select text on any page, right-click and pick a language. Phravexa translates or
 HOW IT WORKS
 1. Select text on a web page or inside a text box.
 2. Right-click and choose a language from the menu.
-3. Phravexa copies the result to your clipboard and shows a short confirmation on the page.
+3. In a text box or editor, Phravexa replaces your selection with the result. It also copies the result to your clipboard and shows a short confirmation on the page.
 4. Paste it wherever you need it.
 
 Choosing "English" rephrases the text in your chosen tone. Choosing any other language translates it and applies the same tone.
@@ -27,6 +27,7 @@ Choosing "English" rephrases the text in your chosen tone. Choosing any other la
 FEATURES
 - Any language: add as many target languages as you like. Each one appears directly in the right-click menu.
 - Your tone: write your own instructions, such as "professional but friendly" or "short and casual", and they are applied to every result.
+- Replaces text in place: select text in a text box or email editor and the result replaces it right where you're typing, with no copy and paste. Undo with Ctrl/Cmd+Z. Text selected elsewhere on a page goes to your clipboard.
 - Formatting kept: when you select text on a page, headings, bold, italics, links, lists and tables are kept, so the result pastes cleanly into Gmail, Google Docs, Word or Slack. Text from text boxes keeps its line breaks and indentation.
 - Choose your AI provider: OpenAI, Anthropic or DeepSeek. Phravexa uses a fast default model for each, and you can set a different model in settings.
 - Clear errors: an invalid key, empty account credit, rate limits and network problems are explained on the page, so you know what to fix.
