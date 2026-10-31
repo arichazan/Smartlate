@@ -15,7 +15,7 @@ if (window.phravexaContentScriptLoaded) {
             showLoadingPopup();
             sendResponse({ success: true });
         } else if (message.type === 'show-popup' && message.text) {
-            showPopup(message.text);
+            showPopup(message.text, message.title);
             sendResponse({ success: true });
         } else if (message.type === 'show-error') {
             showErrorPopup(message.title, message.message, message.isWarning);
@@ -47,7 +47,7 @@ function showLoadingPopup() {
     currentPopup = popup;
 }
 
-function showPopup(text) {
+function showPopup(text, title = 'Copied to clipboard') {
     // Remove any existing popup
     if (currentPopup && currentPopup.parentNode) {
         currentPopup.remove();
@@ -60,7 +60,8 @@ function showPopup(text) {
     // Create header
     const header = document.createElement('div');
     header.className = 'ai-text-tuner-popup-header';
-    header.innerHTML = '<span class="ai-text-tuner-popup-icon">✓</span><span>Copied to clipboard</span>';
+    header.innerHTML = '<span class="ai-text-tuner-popup-icon">✓</span><span></span>';
+    header.lastElementChild.textContent = title;
 
     // Create content
     const content = document.createElement('div');

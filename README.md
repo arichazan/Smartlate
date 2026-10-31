@@ -8,7 +8,8 @@ A Chrome extension for smart translation and rephrasing using AI providers (Open
 - **AI-Powered Rephrasing**: Rephrase text with customizable tone (professional, casual, concise, etc.)
 - **Multiple AI Providers**: Supports OpenAI, Anthropic (Claude), and DeepSeek
 - **One-Click Operation**: Right-click on selected text and choose your target language
-- **Clipboard Integration**: Translated text is automatically copied to clipboard
+- **In-Place Replacement**: Text selected in a text box or editor is replaced with the result directly (Cmd/Ctrl+Z undoes it)
+- **Clipboard Integration**: The result is also copied to the clipboard, so text selected elsewhere on a page can be pasted
 - **Simple Menu**: Flat menu structure with all languages at the top level
 
 ## Installation
@@ -41,7 +42,7 @@ A Chrome extension for smart translation and rephrasing using AI providers (Open
 3. Choose a language from the menu:
    - **English**: Rephrase in English with your chosen tone
    - **Other Languages**: Translate to that language AND rephrase with your tone
-4. The result is automatically copied to your clipboard
+4. If the text was in a text box or editor, it is replaced in place; the result is always copied to your clipboard as well
 5. Paste anywhere with `Cmd+V` (Mac) or `Ctrl+V` (Windows)
 
 ## How It Works
@@ -49,7 +50,7 @@ A Chrome extension for smart translation and rephrasing using AI providers (Open
 - **English**: Only rephrases the text using the configured tone
 - **Other Languages**: Translates to the target language AND applies the tone
 - All operations use your selected AI provider
-- Results are copied directly to clipboard for easy pasting
+- Results replace the selection in editable fields and are copied to the clipboard
 
 ## Privacy & Security
 

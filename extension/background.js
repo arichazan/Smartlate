@@ -57,7 +57,7 @@ function updateContextMenu(languages) {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId.startsWith('lang-')) {
     const language = info.menuItemId.substring('lang-'.length);
-    getSelection(info, tab).then(selection => handleTextTransformation(selection, language, tab));
+    getSelection(info, tab).then(selection => handleTextTransformation(selection, language, tab, info.frameId || 0));
   }
 });
 
@@ -68,11 +68,20 @@ async function getSelection(info, tab) {
         const [injection] = await chrome.scripting.executeScript({
             target: { tabId: tab.id, frameIds: [info.frameId || 0] },
             func: () => {
+                // Remember where an editable selection lives so the result can be written
+                // back in place later (scripts injected into this frame share this window)
+                window.__phravexaTarget = null;
+
                 const el = document.activeElement;
                 try {
                     if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
                         typeof el.selectionStart === 'number' && el.selectionEnd > el.selectionStart) {
-                        return { text: el.value.substring(el.selectionStart, el.selectionEnd), html: null };
+                        const original = el.value.substring(el.selectionStart, el.selectionEnd);
+                        window.__phravexaTarget = {
+                            kind: 'input', el, original,
+                            start: el.selectionStart, end: el.selectionEnd
+                        };
+                        return { text: original, html: null };
                     }
                 } catch (e) {
                     // Some input types don't support selection, fall through
@@ -82,6 +91,27 @@ async function getSelection(info, tab) {
                 const text = selection.toString();
                 if (selection.rangeCount === 0) {
                     return { text, html: null };
+                }
+
+                // Selection inside a rich-text editor (contenteditable / designMode)
+                let editableHost = null;
+                if (selection.rangeCount === 1) {
+                    const range = selection.getRangeAt(0);
+                    let node = range.commonAncestorContainer;
+                    if (node.nodeType !== Node.ELEMENT_NODE) {
+                        node = node.parentElement;
+                    }
+                    if (node && node.isContentEditable) {
+                        editableHost = node;
+                        while (editableHost.parentElement && editableHost.parentElement.isContentEditable) {
+                            editableHost = editableHost.parentElement;
+                        }
+                        const savedRange = range.cloneRange();
+                        window.__phravexaTarget = {
+                            kind: 'editable', host: editableHost, range: savedRange,
+                            original: savedRange.toString()
+                        };
+                    }
                 }
 
                 const container = document.createElement('div');
@@ -94,11 +124,13 @@ async function getSelection(info, tab) {
                     const wrapperTags = ['B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'DEL', 'INS', 'MARK',
                         'SUB', 'SUP', 'SMALL', 'A', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
                         'LI', 'UL', 'OL', 'BLOCKQUOTE', 'FONT', 'SPAN'];
+                    // (skipped for editors: the result is inserted back inside those same
+                    // wrappers, so including them would nest e.g. a <li> inside the <li>)
                     let ancestor = range.commonAncestorContainer;
                     if (ancestor.nodeType !== Node.ELEMENT_NODE) {
                         ancestor = ancestor.parentElement;
                     }
-                    while (ancestor && wrapperTags.includes(ancestor.tagName)) {
+                    while (!editableHost && ancestor && wrapperTags.includes(ancestor.tagName)) {
                         const wrapper = ancestor.cloneNode(false);
                         wrapper.appendChild(fragment);
                         fragment = wrapper;
@@ -149,7 +181,7 @@ async function checkApiKeyConfigured() {
     });
 }
 
-async function handleTextTransformation(selection, language, tab) {
+async function handleTextTransformation(selection, language, tab, frameId = 0) {
     // Check if API key is configured first
     const hasApiKey = await checkApiKeyConfigured();
     if (!hasApiKey) {
@@ -181,7 +213,6 @@ async function handleTextTransformation(selection, language, tab) {
         } else {
             prompt = `${task} Preserve the original formatting exactly: keep every line break, blank line, paragraph break, indentation, list/bullet marker, markdown syntax and spacing in the same places as the original. Do not merge or split lines. Return ONLY the ${resultName} text without quotes, explanations, or additional commentary:\n\n${input}`;
         }
-        const actionMessage = `Text ${resultName} and copied to clipboard!`;
         console.log(`${language === 'English' ? 'Rephrasing' : `Translating to ${language}`} "${input}" with instructions: ${instructions}`);
 
         const result = await performApiCall(prompt, tab);
@@ -190,7 +221,8 @@ async function handleTextTransformation(selection, language, tab) {
             if (isHtml) {
                 // Remove a markdown code fence if the model added one
                 cleanedResult = cleanedResult.replace(/^```(?:html)?\s*\n?/i, '').replace(/\n?```$/, '').trim();
-                await copyToClipboardAndNotify(null, actionMessage, tab, cleanedResult);
+                const replaced = await replaceSelectionInPage(tab, frameId, null, cleanedResult);
+                await copyToClipboardAndNotify(null, tab, cleanedResult, replaced);
                 return;
             }
             // Remove surrounding quotes if they exist
@@ -202,9 +234,91 @@ async function handleTextTransformation(selection, language, tab) {
             const leading = input.match(/^\s*/)[0];
             const trailing = input.match(/\s*$/)[0];
             cleanedResult = leading + cleanedResult + trailing;
-            await copyToClipboardAndNotify(cleanedResult, actionMessage, tab);
+            const replaced = await replaceSelectionInPage(tab, frameId, cleanedResult, null);
+            await copyToClipboardAndNotify(cleanedResult, tab, null, replaced);
         }
     });
+}
+
+// Write the result back over the original selection when it came from a text box or
+// rich-text editor. Returns true only if the page content actually changed; otherwise
+// (static page text, unsupported editor, or the text was edited meanwhile) the caller
+// falls back to the clipboard alone.
+async function replaceSelectionInPage(tab, frameId, text, html) {
+    if ((!text || !text.trim()) && (!html || !html.trim())) {
+        return false;
+    }
+    try {
+        const [injection] = await chrome.scripting.executeScript({
+            target: { tabId: tab.id, frameIds: [frameId] },
+            args: [text, html],
+            func: async (text, html) => {
+                const target = window.__phravexaTarget;
+                window.__phravexaTarget = null;
+                if (!target) {
+                    return false;
+                }
+                // Let editors that apply edits asynchronously (e.g. via beforeinput) catch up
+                const settle = () => new Promise(resolve => setTimeout(resolve, 50));
+
+                if (target.kind === 'input') {
+                    const el = target.el;
+                    if (!el.isConnected || el.disabled || el.readOnly || text === null) {
+                        return false;
+                    }
+                    // Don't overwrite if the user changed the text while we were waiting
+                    if (el.value.substring(target.start, target.end) !== target.original) {
+                        return false;
+                    }
+                    if (text === target.original) {
+                        return true;
+                    }
+                    const before = el.value;
+                    el.focus();
+                    el.setSelectionRange(target.start, target.end);
+                    // execCommand keeps native undo (Cmd/Ctrl+Z) and fires real input events,
+                    // so frameworks like React pick up the change
+                    document.execCommand('insertText', false, text);
+                    await settle();
+                    if (el.value !== before) {
+                        return true;
+                    }
+                    el.setRangeText(text, target.start, target.end, 'end');
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    return el.value !== before;
+                }
+
+                if (target.kind === 'editable') {
+                    const host = target.host;
+                    const range = target.range;
+                    if (!host.isConnected || !host.isContentEditable) {
+                        return false;
+                    }
+                    if (range.toString() !== target.original) {
+                        return false;
+                    }
+                    const before = host.innerHTML;
+                    host.focus();
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    if (html) {
+                        document.execCommand('insertHTML', false, html);
+                    } else {
+                        document.execCommand('insertText', false, text);
+                    }
+                    await settle();
+                    return host.innerHTML !== before;
+                }
+                return false;
+            }
+        });
+        return Boolean(injection && injection.result === true);
+    } catch (err) {
+        console.log('Could not replace text in page, using clipboard only:', err);
+        return false;
+    }
 }
 
 async function showLoadingIndicator(tab) {
@@ -374,7 +488,7 @@ async function performApiCall(prompt, tab) {
     });
 }
 
-async function copyToClipboardAndNotify(text, message, tab, html = null) {
+async function copyToClipboardAndNotify(text, tab, html = null, replaced = false) {
     if ((!text || text.trim() === '') && (!html || html.trim() === '')) {
         console.error('Attempted to copy empty or whitespace text to clipboard.');
         await showErrorMessage(
@@ -414,6 +528,7 @@ async function copyToClipboardAndNotify(text, message, tab, html = null) {
 
             await chrome.tabs.sendMessage(tab.id, {
                 type: 'show-popup',
+                title: replaced ? 'Text replaced (also copied)' : 'Copied to clipboard',
                 // The offscreen document returns the plain-text version of copied HTML
                 text: (response && response.text) || text
             });

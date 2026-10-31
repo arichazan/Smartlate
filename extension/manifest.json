@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Translate & Rephrase - Phravexa",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Instantly translate and refine text in any text box. Add unlimited languages and customize prompts to match your tone and style.",
   "permissions": [
     "contextMenus",
