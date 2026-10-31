@@ -1,92 +1,52 @@
-# Privacy Policy for Phravexa
+# Phravexa Privacy Policy
 
-**Last Updated:** October 31, 2026
+**Last updated:** 31 October 2026
+**Applies to:** the Phravexa Chrome extension (Chrome Web Store ID `kdcfdhofgpgajndceenbjoocapfmojke`), version 1.2.0 and later
+**Operator:** TR1.eu (Ari Chazan), Barcelona, Spain
+**Contact:** support@itbcn.com
 
-## Overview
+## Summary
 
-Phravexa ("the Extension") is committed to protecting your privacy. This privacy policy explains how we handle your data.
+- Phravexa has no servers, no accounts, no analytics and no tracking. We (the operator) never receive your text, your API key or your settings.
+- When you choose a language from the right-click menu, the text you selected is sent directly from your browser to the AI provider you configured (OpenAI, Anthropic or DeepSeek), using your own API key.
+- Your API key stays on your device. Your other preferences may be synced between your own Chrome browsers by Google Chrome Sync.
 
-## Data Collection
+## What the extension handles
 
-**We do NOT collect, store, or transmit any personal data to our servers.** The Extension does not have any backend servers or analytics services.
+| Data | When | Where it goes | Kept for |
+|---|---|---|---|
+| **Selected text** (plain text, or the HTML markup of a selection on a web page so formatting can be kept) | Only when you pick a language from the Phravexa right-click menu | Sent over HTTPS to your chosen AI provider, together with the translation/rephrasing instructions | Not stored by Phravexa. It exists in memory only while the request runs. |
+| **Translated / rephrased result** | After the provider replies | Written back into the text box or editor you selected it in (if any), copied to your clipboard and shown briefly in a small popup on the page | Not stored by Phravexa. It stays on your clipboard until you copy something else. |
+| **API key** for OpenAI, Anthropic or DeepSeek | When you save it on the settings page | Stored in `chrome.storage.local` on this device only. Sent only to the matching provider, as the request's authentication header. | Until you delete it in settings or remove the extension. |
+| **Preferences**: chosen provider, optional model name, tone/special instructions, language list | When you save settings | Stored in `chrome.storage.sync`. If you use Chrome Sync, Google syncs them between browsers signed in to your Google account. | Until you change them or remove the extension. |
 
-### What Data is Stored Locally
+Phravexa does not read pages you do not act on. It reads the current selection only at the moment you click a Phravexa menu item, using Chrome's `activeTab` permission.
 
-The following data is stored locally on your device using Chrome's secure storage API:
+Phravexa does not collect browsing history, location, contacts, identifiers or usage statistics, and does not sell or transfer any data to third parties other than the AI provider you choose for the purpose described above.
 
-1. **API Keys**: Your OpenAI, Anthropic, or DeepSeek API key (depending on which provider you choose)
-2. **User Preferences**:
-   - Selected AI provider
-   - Configured target languages
-   - Preferred rephrasing tone
-3. **Selected Text**: Text you select on webpages is temporarily processed for translation/rephrasing
+## AI providers
 
-All of this data remains on your local device and is never transmitted to us.
+Text you send is processed by the provider under your own account with them and under their terms and privacy policy:
 
-## Data Transmission
+- OpenAI: https://openai.com/policies/privacy-policy
+- Anthropic: https://www.anthropic.com/legal/privacy
+- DeepSeek: https://www.deepseek.com/privacy (DeepSeek states that it stores data on servers in the People's Republic of China)
 
-The Extension transmits data only to the AI service provider you configure:
+Do not translate text that you are not allowed to share with your chosen provider.
 
-- **OpenAI (api.openai.com)** - if you select OpenAI as your provider
-- **Anthropic (api.anthropic.com)** - if you select Anthropic as your provider
-- **DeepSeek (api.deepseek.com)** - if you select DeepSeek as your provider
+## Chrome Web Store User Data Policy
 
-**What is sent to your chosen AI provider:**
-- The text you select and choose to translate/rephrase
-- Your API key (for authentication)
-- Translation/rephrasing instructions
+Phravexa's use of information complies with the [Chrome Web Store User Data Policy](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq), including the Limited Use requirements. Data is used only to provide the translation and rephrasing feature you request, is not used for advertising, and is not read by humans at TR1.eu.
 
-The Extension only sends data to the AI provider when you actively use the translation/rephrasing feature on selected text.
+## Your choices and rights
 
-## Third-Party Services
+- Delete your API key at any time by clearing the field on the settings page and saving, or by removing the extension (which deletes all of its stored data).
+- Because we do not hold any of your data, we cannot access, export or delete it for you; it is under your control in your browser and with your AI provider. If you are in the EU/EEA you have rights under the GDPR, including the right to complain to a supervisory authority (in Spain, the AEPD, https://www.aepd.es). Questions: support@itbcn.com.
 
-When you use the Extension, you are subject to the privacy policies of your chosen AI provider:
+## Children
 
-- **OpenAI Privacy Policy**: https://openai.com/policies/privacy-policy
-- **Anthropic Privacy Policy**: https://www.anthropic.com/privacy
-- **DeepSeek Privacy Policy**: https://www.deepseek.com/privacy-policy
+Phravexa is not directed at children under 13 (or under 14 in Spain).
 
-We recommend reviewing their policies to understand how they handle your data.
+## Changes
 
-## Permissions Explained
-
-The Extension requests the following permissions:
-
-- **contextMenus**: To add translation options to your right-click menu
-- **storage**: To securely save your API key and preferences locally on your device
-- **scripting**: To read the text you select, show progress and confirmation messages on the page, and write the result back into the text box or editor where you selected the text
-- **notifications**: To confirm when translated text is copied to your clipboard
-- **activeTab**: To access the text you select on the current webpage
-- **offscreen**: To use Chrome's clipboard API for copying translated text
-- **clipboardWrite**: To copy translated text to your clipboard
-- **host_permissions** (api.openai.com, api.anthropic.com, api.deepseek.com): To communicate with your chosen AI provider
-
-## Data Security
-
-- API keys and preferences are stored using Chrome's built-in secure storage mechanism
-- No data is transmitted over unencrypted connections (all API calls use HTTPS)
-- We never have access to your API keys or usage data
-
-## Children's Privacy
-
-The Extension is not directed at children under the age of 13, and we do not knowingly collect information from children.
-
-## Changes to This Policy
-
-We may update this privacy policy from time to time. Any changes will be reflected in the "Last Updated" date above.
-
-## Your Rights
-
-Since all data is stored locally on your device:
-- You can delete all Extension data by removing the Extension from Chrome
-- You can clear your API key and preferences at any time through the Extension's options page
-- You have complete control over what text you select and choose to translate
-
-## Contact
-
-If you have questions about this privacy policy, please contact:
-support@itbcn.com
-
-## Consent
-
-By using the Phravexa Extension, you consent to this privacy policy.
+If this policy changes, the new version will be published at the same address with a new "Last updated" date. Material changes (for example a hosted, no-API-key plan) will be described in the extension's release notes before they take effect.

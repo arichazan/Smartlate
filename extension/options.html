@@ -77,7 +77,13 @@
           <li id="anthropic-instructions" style="display: none;"><a href="https://console.anthropic.com/settings/keys" target="_blank">Instructions for Anthropic (Claude)</a></li>
           <li id="deepseek-instructions" style="display: none;"><a href="https://platform.deepseek.com/api_keys" target="_blank">Instructions for DeepSeek</a></li>
         </ul>
+        Your key is stored only on this device and is sent only to the provider you select.
       </div>
+    </div>
+    <div class="form-group">
+      <label for="model">Model (optional)</label>
+      <input type="text" id="model" placeholder="Leave empty for the default">
+      <div style="margin-top: 5px; font-size: 13px; color: #666;">Default: <code id="default-model"></code>. Only change this if your provider has retired the default or you prefer another model.</div>
     </div>
 
     <h2>Special Instructions</h2>
@@ -97,6 +103,8 @@
     <button type="submit">Save Settings</button>
   </form>
 
+  <p id="status" role="status" style="color: #2e7d32;"></p>
+  <script src="lib/core.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ No new permissions or host permissions, so existing users get the update silentl
 1. **Push the privacy policy first.** `PRIVACY.md` now lists the `scripting` permission. Push it so
    https://arichazan.github.io/Phravexa/PRIVACY shows the new version before review.
 2. Open https://chrome.google.com/webstore/devconsole and select **AI Translate & Rephrase - Phravexa**.
-3. **Package** tab → **Upload new package** → `chrome-store-submission/phravexa-1.2.0.zip`.
+3. **Package** tab → **Upload new package** → `dist/phravexa-1.2.0.zip` (build it with `./extension/build.sh`, or download the `phravexa-store-zip` CI artifact).
    The version must read 1.2.0.
 4. **Store listing** tab → replace the **Description** with the contents of `store-description.txt`.
    (The summary, category, and promo tiles are unchanged.)
@@ -25,5 +25,5 @@ No new permissions or host permissions, so existing users get the update silentl
    Data usage answers are unchanged: the only data sent anywhere is the selected text, which goes to the user's chosen AI provider.
 6. **Submit for review.**
 
-## Package check (done)
-- `phravexa-1.2.0.zip`: 14 files, manifest version 1.2.0, `background.js` identical to source.
+## Package check
+- `./extension/build.sh` builds `dist/phravexa-1.2.0.zip` from a fixed file list and verifies its contents. 1.2.0 also includes the fixes listed in `PRODUCTION_READINESS.md` (retired Anthropic default model, API keys moved from sync to local storage, clearer errors).
