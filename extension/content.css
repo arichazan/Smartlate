@@ -125,3 +125,68 @@
         transform: rotate(360deg);
     }
 }
+
+/* Actions row (e.g. "Copy original") */
+.ai-text-tuner-popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.ai-text-tuner-copy-original {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: #b0124f;
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    line-height: 1.2;
+}
+
+.ai-text-tuner-copy-original:hover {
+    background: #ffe9f1;
+}
+
+.ai-text-tuner-copy-original:focus-visible {
+    outline: 3px solid #1a1a1a;
+    outline-offset: 2px;
+}
+
+.ai-text-tuner-copy-original[aria-busy="true"] {
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* Right-to-left UI languages: slide in from the left side */
+.ai-text-tuner-popup.rtl {
+    right: auto;
+    left: 20px;
+    animation-name: slideInFromLeft;
+}
+
+.ai-text-tuner-popup.rtl .ai-text-tuner-popup-icon {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
+.ai-text-tuner-popup.rtl .ai-text-tuner-spinner {
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+.ai-text-tuner-popup.rtl.hiding {
+    animation: slideOutToLeft 0.3s ease-in forwards;
+}
+
+@keyframes slideInFromLeft {
+    from { transform: translateX(-120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutToLeft {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(-120%); opacity: 0; }
+}

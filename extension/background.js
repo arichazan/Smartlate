@@ -1,13 +1,18 @@
 importScripts('lib/core.js');
 
 const {
-  PhravexaError, PROVIDERS, buildPrompt, buildRequest, parseResponse, cleanResult,
+  PhravexaError, PROVIDERS, MAX_INPUT_CHARS, t, badResponseError, emptyResultError,
+  buildPrompt, buildRequest, parseResponse, cleanResult,
   classifyHttpError, classifyNetworkError, validateSelection, normalizeLanguages, isRephrase
 } = self.PhravexaCore;
 
 const DEFAULT_LANGUAGES = ['German', 'Spanish', 'French', 'Chinese'];
 const DEFAULT_TONE = 'Professional and polite, but maintain a friendly and approachable tone suitable for client communication. Keep all URLs unchanged.';
 const REQUEST_TIMEOUT_MS = 60000;
+// Keyboard shortcut declared under "commands" in manifest.json
+const SHORTCUT_COMMAND = 'transform-selection';
+// Used by the shortcut until a language has been picked from the menu
+const DEFAULT_SHORTCUT_LANGUAGE = 'English';
 
 // ---------------------------------------------------------------------------
 // Settings
@@ -99,22 +104,93 @@ function rebuildContextMenu() {
   return menuBuild;
 }
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+function showUnexpectedError(tab) {
+  return showErrorMessage(tab, t('errUnexpectedTitle', 'Unexpected Error'), t('errUnexpected', 'Something went wrong. Please try again.'));
+}
+
+async function runMenuItem(info, tab) {
   if (typeof info.menuItemId !== 'string' || !info.menuItemId.startsWith('lang-')) return;
   const language = info.menuItemId.substring('lang-'.length);
-  getSelection(info, tab)
-    .then(selection => handleTextTransformation(selection, language, tab, info.frameId || 0))
-    .catch(err => {
-      console.error('Phravexa failed:', err);
-      showErrorMessage(tab, 'Unexpected Error', 'Something went wrong. Please try again.');
-    });
+  try {
+    await rememberLanguage(language);
+    const selection = await getSelection(info, tab);
+    await handleTextTransformation(selection, language, tab, info.frameId || 0);
+  } catch (err) {
+    console.error('Phravexa failed:', err);
+    await showUnexpectedError(tab);
+  }
+}
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  runMenuItem(info, tab);
 });
 
-chrome.runtime.onMessage.addListener((message) => {
+// ---------------------------------------------------------------------------
+// Keyboard shortcut: transforms the selection with the last language picked
+// from the menu. Users can change the key at chrome://extensions/shortcuts.
+// ---------------------------------------------------------------------------
+
+async function rememberLanguage(language) {
+  try {
+    const { lastLanguage } = await chrome.storage.sync.get(['lastLanguage']);
+    // Only write on change: sync storage has a per-minute write quota
+    if (lastLanguage !== language) {
+      await chrome.storage.sync.set({ lastLanguage: language });
+    }
+  } catch (err) {
+    console.warn('Could not remember the language:', err.message);
+  }
+}
+
+async function getShortcutLanguage() {
+  const { lastLanguage, languages } = await chrome.storage.sync.get(['lastLanguage', 'languages']);
+  const available = ['English', ...normalizeLanguages(languages)];
+  // A language removed from the list since it was last used is not reused
+  return available.includes(lastLanguage) ? lastLanguage : DEFAULT_SHORTCUT_LANGUAGE;
+}
+
+async function handleCommand(command, tab) {
+  if (command !== SHORTCUT_COMMAND) return;
+  try {
+    if (!tab) {
+      [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    }
+    const language = await getShortcutLanguage();
+    const { selection, frameId } = await getSelectionFromFrames(tab);
+    await handleTextTransformation(selection, language, tab, frameId);
+  } catch (err) {
+    console.error('Phravexa shortcut failed:', err);
+    await showUnexpectedError(tab);
+  }
+}
+
+chrome.commands.onCommand.addListener((command, tab) => {
+  handleCommand(command, tab);
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Sent by the options page after saving; storage.onChanged also covers it
   if (message && message.type === 'settings-updated') {
     rebuildContextMenu();
+    return false;
   }
+  // "Copy original" button in the in-page result popup
+  if (message && message.type === 'copy-original' && sender.tab) {
+    const text = typeof message.text === 'string' ? message.text : '';
+    const html = typeof message.html === 'string' && message.html ? message.html : null;
+    if (!text.trim() && !html) {
+      sendResponse({ success: false });
+      return false;
+    }
+    writeClipboard(text, html)
+      .then(() => sendResponse({ success: true }))
+      .catch(err => {
+        console.error('Copy original failed:', err);
+        sendResponse({ success: false });
+      });
+    return true;
+  }
+  return false;
 });
 
 // ---------------------------------------------------------------------------
@@ -132,10 +208,12 @@ async function getSelection(info, tab) {
     try {
       const [injection] = await chrome.scripting.executeScript({
         target: { tabId: tab.id, frameIds: [info.frameId || 0] },
-        func: readSelectionInPage
+        func: readSelectionInPage,
+        args: [MAX_INPUT_CHARS]
       });
-      if (injection && injection.result && injection.result.text && injection.result.text.trim()) {
-        return injection.result;
+      const result = injection && injection.result;
+      if (result && (result.blocked || (result.text && result.text.trim()))) {
+        return result;
       }
     } catch (err) {
       console.log('Could not read formatted selection, using plain selection text:', err.message);
@@ -144,31 +222,78 @@ async function getSelection(info, tab) {
   return { text: info.selectionText || '', html: null };
 }
 
+// The keyboard shortcut has no frameId, so read every frame the extension may
+// script and use the one that holds focus (or, failing that, any selection).
+async function getSelectionFromFrames(tab) {
+  const none = { selection: { text: '', html: null }, frameId: 0 };
+  if (!canScript(tab)) return none;
+  let results = [];
+  try {
+    results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
+      func: readSelectionInPage,
+      args: [MAX_INPUT_CHARS]
+    });
+  } catch (err) {
+    console.log('Could not read the selection:', err.message);
+    return none;
+  }
+  const candidates = (results || []).filter(r => r && r.result &&
+    (r.result.blocked || (r.result.text && r.result.text.trim())));
+  const pick = candidates.find(r => r.result.focused) || candidates[0];
+  return pick ? { selection: pick.result, frameId: pick.frameId || 0 } : none;
+}
+
 // Runs in the page. Must be self-contained.
-function readSelectionInPage() {
+function readSelectionInPage(maxChars) {
   // Remember where an editable selection lives so the result can be written back
   // in place later (scripts injected into this frame share this window)
   window.__phravexaTarget = null;
 
-  const el = document.activeElement;
+  // Focus inside open shadow roots (web components) ends at the host element
+  let el = document.activeElement;
+  while (el && el.shadowRoot && el.shadowRoot.activeElement) {
+    el = el.shadowRoot.activeElement;
+  }
+  // True only for the innermost focused frame (a parent of a focused iframe also
+  // reports hasFocus)
+  const focused = document.hasFocus() && !(el && (el.tagName === 'IFRAME' || el.tagName === 'FRAME'));
+
+  // Never read or replace a password
+  if (el && el.tagName === 'INPUT' && el.type === 'password' && el.selectionEnd > el.selectionStart) {
+    return { text: '', html: null, focused, blocked: 'password' };
+  }
+
+  // Only these controls have a reliable selection API (email and number inputs
+  // report null), so only they can be replaced in place
+  const textInputTypes = ['text', 'search', 'url', 'tel'];
+  const isTextControl = el && (el.tagName === 'TEXTAREA' ||
+    (el.tagName === 'INPUT' && textInputTypes.includes(el.type)));
   try {
-    if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
-        typeof el.selectionStart === 'number' && el.selectionEnd > el.selectionStart) {
+    if (isTextControl && typeof el.selectionStart === 'number' && el.selectionEnd > el.selectionStart) {
       const original = el.value.substring(el.selectionStart, el.selectionEnd);
-      window.__phravexaTarget = {
-        kind: 'input', el, original,
-        start: el.selectionStart, end: el.selectionEnd
-      };
-      return { text: original, html: null };
+      // Too long: the caller rejects it, so don't keep a target around
+      if (original.length <= maxChars && !el.disabled && !el.readOnly) {
+        window.__phravexaTarget = {
+          kind: 'input', el, original,
+          start: el.selectionStart, end: el.selectionEnd
+        };
+      }
+      return { text: original, html: null, focused };
     }
   } catch (e) {
-    // Some input types don't support selection, fall through
+    // Fall through to the document selection
   }
 
   const selection = window.getSelection();
   const text = selection ? selection.toString() : '';
   if (!selection || selection.rangeCount === 0) {
-    return { text, html: null };
+    return { text, html: null, focused };
+  }
+  // Skip the HTML copy for selections the caller rejects anyway (e.g. select-all
+  // on a very long page), which would otherwise clone the whole document
+  if (text.length > maxChars) {
+    return { text, html: null, focused };
   }
 
   // Selection inside a rich-text editor (contenteditable / designMode)
@@ -189,6 +314,10 @@ function readSelectionInPage() {
         kind: 'editable', host: editableHost, range: savedRange,
         original: savedRange.toString()
       };
+      // Plain-text-only editors would show inserted HTML as literal tags
+      if (editableHost.getAttribute('contenteditable') === 'plaintext-only') {
+        return { text, html: null, focused };
+      }
     }
   }
 
@@ -237,7 +366,7 @@ function readSelectionInPage() {
 
   // A selection without any markup is just plain text
   const html = container.querySelector('*') ? container.innerHTML : null;
-  return { text, html };
+  return { text, html, focused };
 }
 
 // Write the result back over the original selection when it came from a text box or
@@ -266,7 +395,10 @@ async function replaceSelectionInPage(tab, frameId, text, html) {
 
                 if (target.kind === 'input') {
                     const el = target.el;
-                    if (!el.isConnected || el.disabled || el.readOnly || text === null) {
+                    // (the type is checked again in case the page switched it, e.g. a
+                    // "show password" toggle)
+                    if (!el.isConnected || el.disabled || el.readOnly || text === null ||
+                        el.type === 'password') {
                         return false;
                     }
                     // Don't overwrite if the user changed the text while we were waiting
@@ -334,10 +466,12 @@ async function handleTextTransformation(selection, language, tab, frameId = 0) {
 
     const settings = await getSettings();
     if (!settings.apiKey) {
-      throw new PhravexaError('Setup Required', 'Add your AI provider and API key in Phravexa settings (click the extension icon).', { isWarning: true, code: 'no_key' });
+      throw new PhravexaError(t('errSetupTitle', 'Setup Required'), t('errSetup', 'Add your AI provider and API key in Phravexa settings (click the extension icon).'), { isWarning: true, code: 'no_key' });
     }
 
-    showLoadingIndicator(tab, isRephrase(language) ? 'Rephrasing' : `Translating to ${language}`);
+    showLoadingIndicator(tab, isRephrase(language)
+      ? t('loadingRephrasing', 'Rephrasing')
+      : t('loadingTranslating', `Translating to ${language}`, [language]));
 
     const { prompt, isHtml, input, resultName } = buildPrompt({
       language,
@@ -355,19 +489,31 @@ async function handleTextTransformation(selection, language, tab, frameId = 0) {
     // the provider cut the result short, so a partial answer never replaces the user's text.
     const replaced = raw.truncated ? false : await replaceSelectionInPage(tab, frameId, text, html);
 
+    const rephrased = resultName === 'rephrased';
+    let message;
+    if (replaced) {
+      message = rephrased
+        ? t('notifyRephrasedReplaced', 'Text rephrased, replaced and copied to clipboard')
+        : t('notifyTranslatedReplaced', 'Text translated, replaced and copied to clipboard');
+    } else {
+      message = rephrased
+        ? t('notifyRephrased', 'Text rephrased and copied to clipboard')
+        : t('notifyTranslated', 'Text translated and copied to clipboard');
+    }
     await copyToClipboardAndNotify(tab, {
       text,
       html,
-      message: replaced ? `Text ${resultName}, replaced and copied to clipboard` : `Text ${resultName} and copied to clipboard`,
-      title: replaced ? 'Text replaced (also copied)' : 'Copied to clipboard',
-      truncated: raw.truncated
+      message,
+      title: replaced ? t('popupReplaced', 'Text replaced (also copied)') : t('popupCopied', 'Copied to clipboard'),
+      truncated: raw.truncated,
+      original: { text: selection.text, html: selection.html || null }
     });
   } catch (err) {
     if (err instanceof PhravexaError) {
       await showErrorMessage(tab, err.title, err.message, err.isWarning);
     } else {
       console.error('Phravexa failed:', err);
-      await showErrorMessage(tab, 'Unexpected Error', 'Something went wrong. Please try again.');
+      await showUnexpectedError(tab);
     }
   }
 }
@@ -402,7 +548,7 @@ async function callProvider(settings, prompt) {
   try {
     json = await response.json();
   } catch (err) {
-    throw new PhravexaError('Unexpected Response', `${label} returned an unreadable response. Please try again.`, { code: 'bad_response' });
+    throw badResponseError(label);
   }
   return parseResponse(settings.provider, json);
 }
@@ -476,9 +622,9 @@ function writeClipboard(text, html) {
   return job;
 }
 
-async function copyToClipboardAndNotify(tab, { text, html, message, title, truncated }) {
+async function copyToClipboardAndNotify(tab, { text, html, message, title, truncated, original }) {
   if ((!text || !text.trim()) && (!html || !html.trim())) {
-    throw new PhravexaError('Empty Result', 'The AI provider returned an empty result. Please try again.', { code: 'empty_result' });
+    throw emptyResultError();
   }
 
   let response;
@@ -486,13 +632,15 @@ async function copyToClipboardAndNotify(tab, { text, html, message, title, trunc
     response = await writeClipboard(text, html);
   } catch (err) {
     console.error('Clipboard write failed:', err);
-    throw new PhravexaError('Clipboard Error', 'Could not copy the result to the clipboard. Please try again.', { code: 'clipboard' });
+    throw new PhravexaError(t('errClipboardTitle', 'Clipboard Error'), t('errClipboard', 'Could not copy the result to the clipboard. Please try again.'), { code: 'clipboard' });
   }
 
   const preview = (response && response.text) || text || '';
-  const shown = await sendToPage(tab, { type: 'show-popup', text: preview, title, truncated: Boolean(truncated) });
+  const shown = await sendToPage(tab, {
+    type: 'show-popup', text: preview, title, truncated: Boolean(truncated), original: original || null
+  });
   if (!shown) {
-    notify('Phravexa', `${message}.${truncated ? ' The result may be cut short.' : ''}`);
+    notify('Phravexa', `${message}.${truncated ? ' ' + t('notifyTruncated', 'The result may be cut short.') : ''}`);
   }
 }
 
@@ -512,7 +660,7 @@ async function createOffscreenDocument() {
     creatingOffscreen = chrome.offscreen.createDocument({
       url: 'offscreen.html',
       reasons: ['CLIPBOARD'],
-      justification: 'Write the translated text to the clipboard.'
+      justification: 'Write the translated text (or the original selection) to the clipboard.'
     }).finally(() => { creatingOffscreen = null; });
   }
   await creatingOffscreen;

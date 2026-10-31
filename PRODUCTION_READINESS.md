@@ -1,6 +1,6 @@
 # Phravexa: Production Readiness
 
-Branch: `production-ready` · Extension version: **1.2.0** · Chrome Web Store ID: `kdcfdhofgpgajndceenbjoocapfmojke`
+Branch: `production-ready` · Extension version: **1.3.0** · Chrome Web Store ID: `kdcfdhofgpgajndceenbjoocapfmojke`
 
 ## 1. Readiness score
 
@@ -59,9 +59,9 @@ Before, the Anthropic provider could not work because its default model had been
 
 ### Owner must do (Ari)
 
-1. **Merge the branch.** On GitHub, go to arichazan/Phravexa, open **Pull requests**, click **New pull request**, set base `main` and compare `production-ready`, then **Create pull request**. Check that CI is green, then **Merge**. The privacy-policy URL below only works after the merge.
+1. **Merge the branch.** PR #1 (1.2.0) is already merged. The polish-round-2 commits (1.3.0) are on `production-ready` only. On GitHub, go to arichazan/Smartlate, open **Pull requests**, click **New pull request**, set base `main` and compare `production-ready`, then **Create pull request**. Check that CI is green, then **Merge**. The updated privacy policy (keyboard shortcut, Copy original) is live only after the merge.
 2. **Smoke-test with real keys (about 10 minutes).** Run `./extension/build.sh` (or download the `phravexa-store-zip` artifact from the CI run) and unzip it. In `chrome://extensions`, turn on Developer mode, click **Load unpacked** and pick the unzipped folder. Remove or disable the store version first. For **each** provider you have a key for (OpenAI, Anthropic, DeepSeek): open settings, choose the provider, paste the key and save. Then on any page, select a paragraph with bold text and a link, right-click, choose **Spanish** and paste into Gmail or Docs. Expected: a "Copied to clipboard" popup, with formatting kept. Also try **English** inside a textarea with blank lines. Then enter a wrong key and check that "Invalid API Key" appears. If a provider reports "Model Not Available", type a model your account has into **Model (optional)** and tell engineering which one, so the default can be updated.
-3. **Upload the update.** Go to https://chrome.google.com/webstore/devconsole and open **Phravexa**. Under **Package**, click **Upload new package** and choose `dist/phravexa-1.2.0.zip`.
+3. **Upload the update.** Go to https://chrome.google.com/webstore/devconsole and open **Phravexa**. Under **Package**, click **Upload new package** and choose `dist/phravexa-1.3.0.zip`. Step-by-step notes for this update, including which privacy justifications changed: `chrome-store-submission/UPGRADE_1.3.0.md`. While smoke-testing (step 2), also press `Alt+Shift+T` on a selection after using the menu once, and click **Copy original** after a replacement in Gmail.
 4. **Store listing tab.** Paste the description from `chrome-store-submission/store-description.txt`. Replace the small promo tile with `440x280.png` and the marquee with `1400x560.png`. Check that the screenshots in `chrome-store-submission/screenshots/` do not show the old name; if any do, take new ones at 1280x800. Set Homepage URL to `https://arichazan.github.io/apps/phravexa.html`.
 5. **Privacy practices tab.** Paste the single purpose, the permission justifications and the data disclosures from `chrome-store-submission/SUBMISSION_CHECKLIST.md`. Set Privacy policy URL to `https://github.com/arichazan/Smartlate/blob/main/PRIVACY.md`. Tick the three certifications.
 6. **Submit for review.** Click **Submit for review** and keep "Publish automatically after review" if you want it live right away.
@@ -70,14 +70,29 @@ Before, the Anthropic provider could not work because its default model had been
 ### Engineering left
 - No real-provider call could be made from this container (no API keys). The request shapes are unit-tested and the full flow is e2e-tested against stubs, but the first live check is owner step 2.
 - Default model IDs should be reviewed every few months. The model override field covers users in the meantime.
-- Nice to have, not required for this release: localise the UI (`_locales`), a keyboard shortcut (`commands`), and an "undo/copy original" action in the popup.
+- Translations (es, fr, de, he) were written without a native-speaker review. A quick read by a native speaker before promoting the localised listings is advisable.
+- Cross-origin iframes are only reachable when the extension has access to them; under `activeTab` the shortcut and menu work in same-origin frames, and otherwise fall back to the clipboard.
+
+## Polish round 2 (version 1.3.0)
+
+Score unchanged at **8/10**: these are quality improvements; the two remaining points are still owner actions (real-key smoke test, store upload/review). The 1.2.0 work was merged to `main` by the owner (PR #1); this round continues on `production-ready`.
+
+| Item | What changed | Verified by |
+|---|---|---|
+| Keyboard shortcut | `commands.transform-selection`, suggested `Alt+Shift+T` (user-changeable at `chrome://extensions/shortcuts`). Uses the language last picked from the menu (stored as `lastLanguage` in sync storage, written only on change); English/rephrase until one is picked or if it was removed from the list. Reads all frames and uses the focused one, then reuses the same transform → in-place → clipboard path. The toolbar popup shows the shortcut, the language it will use and a "Change shortcut" link. | e2e: last language reused and replaced in place; default/removed language → rephrase; selection in an iframe wins over a highlighted top-document selection and is replaced in the iframe; popup page. Handler is invoked directly (`handleCommand`). |
+| Copy original | A real `<button>` in the result popup copies the original selection (with its HTML for page selections) through the offscreen clipboard. Auto-hide (5 s with the button) pauses on hover and keyboard focus; Escape closes; popups use `role=status` / `role=alert`. | e2e: focus the button, press Enter → clipboard holds the original; popup stays while focused; Escape closes it. |
+| Localisation | `_locales` en (default), es, fr, de, he: description, shortcut name, toolbar popup, settings page, in-page messages, notifications and all error messages. The store name is not localised and stays "AI Translate & Rephrase - Phravexa". Pages set `lang`/`dir` (RTL for Hebrew, popup mirrored). `lib/core.js` uses `chrome.i18n` when present and an English fallback otherwise. | Unit: same keys/placeholders in all locales, description ≤ 132 per locale, every English fallback in code/HTML equals `_locales/en`, errors from `chrome.i18n` equal the fallbacks. e2e runs with `--lang=en-US`. Manual run with `--lang=he` and `--lang=de` showed translated, RTL settings and popup. |
+| In-place edge cases | Password fields: never read, sent or replaced ("Password Field" warning; also re-checked before writing). Only `text/search/url/tel` inputs and textareas are replaced (email/number have no selection API → clipboard only). Read-only/disabled fields are not targeted. Very large selections skip the HTML copy and keep no target. `contenteditable="plaintext-only"` gets plain text. Focus inside open shadow roots is followed. Context-menu `frameId` is used for read and write. | e2e: password (menu and shortcut, no request made), email and read-only (copied, unchanged), oversized textarea and select-all (rejected, no HTML built, no request), context menu in an iframe replaces in that frame. |
+| Build | Ships `_locales/*` and `lib/i18n.js`; `verify-package.js` resolves `__MSG_` names, checks each locale and the fixed store name. Version 1.3.0. No new permissions. | `./extension/build.sh` → 20 files verified. |
+
+Tests: `npm test` → 28 unit + 22 e2e passing locally. CI on the code commit: https://github.com/arichazan/Smartlate/actions/runs/41245580182 (success: unit, e2e in Chromium, build and package verification).
 
 ## 4. Chrome Web Store submission checklist
 
-- [x] Manifest V3, name ≤ 75 chars, description ≤ 132 chars (126), version 1.2.0 (higher than the live 1.1.0)
+- [x] Manifest V3, name ≤ 75 chars (fixed: "AI Translate & Rephrase - Phravexa"), description ≤ 132 chars in all 5 locales, version 1.3.0 (higher than the live 1.1.0 and the prepared 1.2.0)
 - [x] No new permissions or hosts compared with the live version (no re-approval prompt for existing users)
 - [x] No remote code; all JS packaged; no `eval`
-- [x] Store ZIP built and verified (`dist/phravexa-1.2.0.zip`, 14 files)
+- [x] Store ZIP built and verified (`dist/phravexa-1.3.0.zip`, 20 files incl. `_locales`)
 - [x] Icons 16/48/128 present
 - [x] Promo tiles 440x280, 920x680, 1400x560 rendered with the new name
 - [x] Description matches actual features (`store-description.txt`)

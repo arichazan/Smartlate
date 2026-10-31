@@ -1,0 +1,368 @@
+{
+  "extDescription": {
+    "message": "Instantly translate and refine text in any text box. Add unlimited languages and customize prompts to match your tone and style.",
+    "description": "Store description (max 132 characters)"
+  },
+  "commandDescription": {
+    "message": "Translate/rephrase selection with last-used language",
+    "description": "Keyboard shortcut description at chrome://extensions/shortcuts"
+  },
+  "popupNoKeyTitle": {
+    "message": "No API Key Configured"
+  },
+  "popupNoKeyBody": {
+    "message": "Please go to Settings to add an API key for your chosen provider."
+  },
+  "popupHowTo": {
+    "message": "Select text on a page and right-click to translate or rephrase."
+  },
+  "popupGoToSettings": {
+    "message": "Go to Settings"
+  },
+  "popupShortcut": {
+    "message": "Shortcut: $KEY$",
+    "description": "Shown in the toolbar popup; KEY is e.g. Alt+Shift+T",
+    "placeholders": {
+      "key": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutLanguage": {
+    "message": "Uses the last language you picked: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutNone": {
+    "message": "No keyboard shortcut is set."
+  },
+  "popupChangeShortcut": {
+    "message": "Change shortcut"
+  },
+  "popupRephraseLanguage": {
+    "message": "English (rephrase)",
+    "description": "The built-in English entry, which rephrases"
+  },
+  "optPageTitle": {
+    "message": "Phravexa Settings"
+  },
+  "optProviderSection": {
+    "message": "AI Provider"
+  },
+  "optProviderLabel": {
+    "message": "Active Provider"
+  },
+  "optApiKeyLabel": {
+    "message": "API Key"
+  },
+  "optApiKeyPlaceholder": {
+    "message": "Enter your API key"
+  },
+  "optHowToGetKey": {
+    "message": "How to get an API key:"
+  },
+  "optInstructionsOpenai": {
+    "message": "Instructions for OpenAI"
+  },
+  "optInstructionsAnthropic": {
+    "message": "Instructions for Anthropic (Claude)"
+  },
+  "optInstructionsDeepseek": {
+    "message": "Instructions for DeepSeek"
+  },
+  "optKeyPrivacy": {
+    "message": "Your key is stored only on this device and is sent only to the provider you select."
+  },
+  "optModelLabel": {
+    "message": "Model (optional)"
+  },
+  "optModelPlaceholder": {
+    "message": "Leave empty for the default"
+  },
+  "optModelDefault": {
+    "message": "Default:"
+  },
+  "optModelHint": {
+    "message": "Only change this if your provider has retired the default or you prefer another model."
+  },
+  "optInstructionsSection": {
+    "message": "Special Instructions"
+  },
+  "optTonePlaceholder": {
+    "message": "e.g., Professional, polite but friendly"
+  },
+  "optLanguagesSection": {
+    "message": "Translation Languages"
+  },
+  "optAddLanguageLabel": {
+    "message": "Add Language"
+  },
+  "optAddLanguagePlaceholder": {
+    "message": "e.g., Spanish",
+    "description": "Example language name; names are sent to the AI as typed"
+  },
+  "optAddButton": {
+    "message": "Add"
+  },
+  "optRemoveLanguage": {
+    "message": "Remove $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "optSave": {
+    "message": "Save Settings"
+  },
+  "optSaved": {
+    "message": "Settings saved."
+  },
+  "optSaveFailed": {
+    "message": "Could not save settings: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "loadingDefault": {
+    "message": "Translating"
+  },
+  "loadingRephrasing": {
+    "message": "Rephrasing"
+  },
+  "loadingTranslating": {
+    "message": "Translating to $LANGUAGE$",
+    "description": "LANGUAGE is the target language name as entered in settings",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupCopied": {
+    "message": "Copied to clipboard"
+  },
+  "popupReplaced": {
+    "message": "Text replaced (also copied)"
+  },
+  "popupTruncatedSuffix": {
+    "message": "(may be cut short)"
+  },
+  "popupCopyOriginal": {
+    "message": "Copy original",
+    "description": "Button in the result popup"
+  },
+  "popupCopyOriginalHint": {
+    "message": "Copy the text you selected before it was changed"
+  },
+  "popupOriginalCopied": {
+    "message": "Original copied"
+  },
+  "popupOriginalCopyFailed": {
+    "message": "Could not copy"
+  },
+  "notifyTranslated": {
+    "message": "Text translated and copied to clipboard"
+  },
+  "notifyRephrased": {
+    "message": "Text rephrased and copied to clipboard"
+  },
+  "notifyTranslatedReplaced": {
+    "message": "Text translated, replaced and copied to clipboard"
+  },
+  "notifyRephrasedReplaced": {
+    "message": "Text rephrased, replaced and copied to clipboard"
+  },
+  "notifyTruncated": {
+    "message": "The result may be cut short."
+  },
+  "providerGeneric": {
+    "message": "The AI provider",
+    "description": "Used when the provider name is unknown"
+  },
+  "errUnsupportedProviderTitle": {
+    "message": "Unsupported Provider"
+  },
+  "errUnsupportedProvider": {
+    "message": "Provider '$PROVIDER$' is not supported. Please choose OpenAI, Anthropic or DeepSeek in settings.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadResponseTitle": {
+    "message": "Unexpected Response"
+  },
+  "errBadResponse": {
+    "message": "The AI provider returned an unreadable response. Please try again."
+  },
+  "errBadResponseFrom": {
+    "message": "$PROVIDER$ returned an unreadable response. Please try again.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRefusedTitle": {
+    "message": "Request Declined"
+  },
+  "errRefused": {
+    "message": "The AI provider declined to process this text."
+  },
+  "errEmptyTitle": {
+    "message": "Empty Result"
+  },
+  "errEmpty": {
+    "message": "The AI provider returned an empty result. Please try again."
+  },
+  "errAuthTitle": {
+    "message": "Invalid API Key"
+  },
+  "errAuth": {
+    "message": "$PROVIDER$ rejected your API key. Please check it in Phravexa settings.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errQuotaTitle": {
+    "message": "Out of Credit"
+  },
+  "errQuota": {
+    "message": "$PROVIDER$ reports that your account has no remaining credit or quota. Add billing credit with the provider and try again.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRateLimitTitle": {
+    "message": "Rate Limit"
+  },
+  "errRateLimit": {
+    "message": "$PROVIDER$ is rate limiting requests. Please wait a moment and try again.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelTitle": {
+    "message": "Model Not Available"
+  },
+  "errModel": {
+    "message": "The selected model is not available for your account$DETAIL$. Set a different model in Phravexa settings.",
+    "description": "DETAIL is empty or a provider message in parentheses with a leading space",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadRequestTitle": {
+    "message": "Request Rejected"
+  },
+  "errBadRequest": {
+    "message": "$PROVIDER$ rejected the request$DETAIL$.",
+    "description": "DETAIL as in errModel",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errServerTitle": {
+    "message": "Provider Unavailable"
+  },
+  "errServer": {
+    "message": "$PROVIDER$ is temporarily unavailable (HTTP $STATUS$). Please try again shortly.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "status": {
+        "content": "$2"
+      }
+    }
+  },
+  "errHttpTitle": {
+    "message": "Translation Error"
+  },
+  "errHttp": {
+    "message": "Request failed with HTTP $STATUS$$DETAIL$.",
+    "description": "DETAIL as in errModel",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errTimeoutTitle": {
+    "message": "Request Timed Out"
+  },
+  "errTimeout": {
+    "message": "The AI provider did not respond in time. Please try again."
+  },
+  "errNetworkTitle": {
+    "message": "Network Error"
+  },
+  "errNetwork": {
+    "message": "Could not reach the AI provider. Please check your internet connection."
+  },
+  "errPasswordTitle": {
+    "message": "Password Field"
+  },
+  "errPassword": {
+    "message": "Phravexa never reads or replaces text in password fields."
+  },
+  "errNoSelectionTitle": {
+    "message": "No Text Selected"
+  },
+  "errNoSelection": {
+    "message": "Select some text first, then right-click and choose a language, or press the Phravexa shortcut."
+  },
+  "errTooLongTitle": {
+    "message": "Selection Too Long"
+  },
+  "errTooLong": {
+    "message": "Please select less text (up to about $COUNT$ characters).",
+    "description": "COUNT is a formatted number",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errSetupTitle": {
+    "message": "Setup Required"
+  },
+  "errSetup": {
+    "message": "Add your AI provider and API key in Phravexa settings (click the extension icon)."
+  },
+  "errClipboardTitle": {
+    "message": "Clipboard Error"
+  },
+  "errClipboard": {
+    "message": "Could not copy the result to the clipboard. Please try again."
+  },
+  "errUnexpectedTitle": {
+    "message": "Unexpected Error"
+  },
+  "errUnexpected": {
+    "message": "Something went wrong. Please try again."
+  }
+}

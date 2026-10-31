@@ -1,0 +1,356 @@
+{
+  "extDescription": {
+    "message": "תרגום ושיפור מיידי של טקסט בכל תיבת טקסט. הוסיפו שפות ללא הגבלה והתאימו את ההנחיות לטון ולסגנון שלכם."
+  },
+  "commandDescription": {
+    "message": "תרגום/ניסוח מחדש של הטקסט הנבחר בשפה האחרונה שנבחרה"
+  },
+  "popupNoKeyTitle": {
+    "message": "לא הוגדר מפתח API"
+  },
+  "popupNoKeyBody": {
+    "message": "עברו להגדרות כדי להוסיף מפתח API לספק שבחרתם."
+  },
+  "popupHowTo": {
+    "message": "סמנו טקסט בדף ולחצו על לחצן העכבר הימני כדי לתרגם או לנסח מחדש."
+  },
+  "popupGoToSettings": {
+    "message": "מעבר להגדרות"
+  },
+  "popupShortcut": {
+    "message": "קיצור מקשים: $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutLanguage": {
+    "message": "משתמש בשפה האחרונה שבחרתם: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutNone": {
+    "message": "לא הוגדר קיצור מקשים."
+  },
+  "popupChangeShortcut": {
+    "message": "שינוי קיצור המקשים"
+  },
+  "popupRephraseLanguage": {
+    "message": "אנגלית (ניסוח מחדש)"
+  },
+  "optPageTitle": {
+    "message": "הגדרות Phravexa"
+  },
+  "optProviderSection": {
+    "message": "ספק בינה מלאכותית"
+  },
+  "optProviderLabel": {
+    "message": "ספק פעיל"
+  },
+  "optApiKeyLabel": {
+    "message": "מפתח API"
+  },
+  "optApiKeyPlaceholder": {
+    "message": "הזינו את מפתח ה-API"
+  },
+  "optHowToGetKey": {
+    "message": "איך מקבלים מפתח API:"
+  },
+  "optInstructionsOpenai": {
+    "message": "הוראות עבור OpenAI"
+  },
+  "optInstructionsAnthropic": {
+    "message": "הוראות עבור Anthropic (Claude)"
+  },
+  "optInstructionsDeepseek": {
+    "message": "הוראות עבור DeepSeek"
+  },
+  "optKeyPrivacy": {
+    "message": "המפתח נשמר רק במכשיר הזה ונשלח רק לספק שבחרתם."
+  },
+  "optModelLabel": {
+    "message": "מודל (אופציונלי)"
+  },
+  "optModelPlaceholder": {
+    "message": "השאירו ריק לשימוש בברירת המחדל"
+  },
+  "optModelDefault": {
+    "message": "ברירת מחדל:"
+  },
+  "optModelHint": {
+    "message": "שנו זאת רק אם הספק הפסיק לתמוך במודל ברירת המחדל או אם אתם מעדיפים מודל אחר."
+  },
+  "optInstructionsSection": {
+    "message": "הנחיות מיוחדות"
+  },
+  "optTonePlaceholder": {
+    "message": "לדוגמה: מקצועי, מנומס אך ידידותי"
+  },
+  "optLanguagesSection": {
+    "message": "שפות תרגום"
+  },
+  "optAddLanguageLabel": {
+    "message": "הוספת שפה"
+  },
+  "optAddLanguagePlaceholder": {
+    "message": "לדוגמה: Spanish או ספרדית"
+  },
+  "optAddButton": {
+    "message": "הוספה"
+  },
+  "optRemoveLanguage": {
+    "message": "הסרת $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "optSave": {
+    "message": "שמירת ההגדרות"
+  },
+  "optSaved": {
+    "message": "ההגדרות נשמרו."
+  },
+  "optSaveFailed": {
+    "message": "לא ניתן היה לשמור את ההגדרות: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "loadingDefault": {
+    "message": "מתרגם"
+  },
+  "loadingRephrasing": {
+    "message": "מנסח מחדש"
+  },
+  "loadingTranslating": {
+    "message": "מתרגם ל: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupCopied": {
+    "message": "הועתק ללוח"
+  },
+  "popupReplaced": {
+    "message": "הטקסט הוחלף (וגם הועתק)"
+  },
+  "popupTruncatedSuffix": {
+    "message": "(ייתכן שנקטע)"
+  },
+  "popupCopyOriginal": {
+    "message": "העתקת המקור"
+  },
+  "popupCopyOriginalHint": {
+    "message": "העתקת הטקסט שסימנתם לפני השינוי"
+  },
+  "popupOriginalCopied": {
+    "message": "המקור הועתק"
+  },
+  "popupOriginalCopyFailed": {
+    "message": "ההעתקה נכשלה"
+  },
+  "notifyTranslated": {
+    "message": "הטקסט תורגם והועתק ללוח"
+  },
+  "notifyRephrased": {
+    "message": "הטקסט נוסח מחדש והועתק ללוח"
+  },
+  "notifyTranslatedReplaced": {
+    "message": "הטקסט תורגם, הוחלף והועתק ללוח"
+  },
+  "notifyRephrasedReplaced": {
+    "message": "הטקסט נוסח מחדש, הוחלף והועתק ללוח"
+  },
+  "notifyTruncated": {
+    "message": "ייתכן שהתוצאה נקטעה."
+  },
+  "providerGeneric": {
+    "message": "ספק הבינה המלאכותית"
+  },
+  "errUnsupportedProviderTitle": {
+    "message": "ספק לא נתמך"
+  },
+  "errUnsupportedProvider": {
+    "message": "הספק '$PROVIDER$' אינו נתמך. בחרו OpenAI,‏ Anthropic או DeepSeek בהגדרות.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadResponseTitle": {
+    "message": "תגובה לא צפויה"
+  },
+  "errBadResponse": {
+    "message": "ספק הבינה המלאכותית החזיר תגובה שלא ניתן לקרוא. נסו שוב."
+  },
+  "errBadResponseFrom": {
+    "message": "$PROVIDER$ החזיר תגובה שלא ניתן לקרוא. נסו שוב.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRefusedTitle": {
+    "message": "הבקשה נדחתה"
+  },
+  "errRefused": {
+    "message": "ספק הבינה המלאכותית סירב לעבד את הטקסט הזה."
+  },
+  "errEmptyTitle": {
+    "message": "תוצאה ריקה"
+  },
+  "errEmpty": {
+    "message": "ספק הבינה המלאכותית החזיר תוצאה ריקה. נסו שוב."
+  },
+  "errAuthTitle": {
+    "message": "מפתח API לא תקין"
+  },
+  "errAuth": {
+    "message": "$PROVIDER$ דחה את מפתח ה-API שלכם. בדקו אותו בהגדרות Phravexa.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errQuotaTitle": {
+    "message": "נגמרה היתרה"
+  },
+  "errQuota": {
+    "message": "$PROVIDER$ מדווח שבחשבון שלכם לא נותרו יתרה או מכסה. הוסיפו יתרה אצל הספק ונסו שוב.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRateLimitTitle": {
+    "message": "מגבלת קצב"
+  },
+  "errRateLimit": {
+    "message": "$PROVIDER$ מגביל את קצב הבקשות. המתינו רגע ונסו שוב.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelTitle": {
+    "message": "המודל אינו זמין"
+  },
+  "errModel": {
+    "message": "המודל שנבחר אינו זמין בחשבון שלכם$DETAIL$. הגדירו מודל אחר בהגדרות Phravexa.",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadRequestTitle": {
+    "message": "הבקשה נדחתה"
+  },
+  "errBadRequest": {
+    "message": "$PROVIDER$ דחה את הבקשה$DETAIL$.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errServerTitle": {
+    "message": "הספק אינו זמין"
+  },
+  "errServer": {
+    "message": "$PROVIDER$ אינו זמין זמנית (HTTP $STATUS$). נסו שוב בעוד זמן קצר.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "status": {
+        "content": "$2"
+      }
+    }
+  },
+  "errHttpTitle": {
+    "message": "שגיאת תרגום"
+  },
+  "errHttp": {
+    "message": "הבקשה נכשלה עם HTTP $STATUS$$DETAIL$.",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errTimeoutTitle": {
+    "message": "תם הזמן לבקשה"
+  },
+  "errTimeout": {
+    "message": "ספק הבינה המלאכותית לא הגיב בזמן. נסו שוב."
+  },
+  "errNetworkTitle": {
+    "message": "שגיאת רשת"
+  },
+  "errNetwork": {
+    "message": "לא ניתן להתחבר לספק הבינה המלאכותית. בדקו את החיבור לאינטרנט."
+  },
+  "errPasswordTitle": {
+    "message": "שדה סיסמה"
+  },
+  "errPassword": {
+    "message": "Phravexa אף פעם לא קורא או מחליף טקסט בשדות סיסמה."
+  },
+  "errNoSelectionTitle": {
+    "message": "לא נבחר טקסט"
+  },
+  "errNoSelection": {
+    "message": "סמנו קודם טקסט, ואז לחצו על לחצן העכבר הימני ובחרו שפה, או הקישו על קיצור המקשים של Phravexa."
+  },
+  "errTooLongTitle": {
+    "message": "הבחירה ארוכה מדי"
+  },
+  "errTooLong": {
+    "message": "בחרו פחות טקסט (עד כ-$COUNT$ תווים).",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errSetupTitle": {
+    "message": "נדרשת הגדרה"
+  },
+  "errSetup": {
+    "message": "הוסיפו את ספק הבינה המלאכותית ואת מפתח ה-API בהגדרות Phravexa (לחצו על סמל התוסף)."
+  },
+  "errClipboardTitle": {
+    "message": "שגיאת לוח"
+  },
+  "errClipboard": {
+    "message": "לא ניתן היה להעתיק את התוצאה ללוח. נסו שוב."
+  },
+  "errUnexpectedTitle": {
+    "message": "שגיאה לא צפויה"
+  },
+  "errUnexpected": {
+    "message": "משהו השתבש. נסו שוב."
+  }
+}

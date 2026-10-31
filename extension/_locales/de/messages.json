@@ -1,0 +1,356 @@
+{
+  "extDescription": {
+    "message": "Text in jedem Textfeld sofort übersetzen und verbessern. Beliebig viele Sprachen hinzufügen und Anweisungen an Ihren Stil anpassen."
+  },
+  "commandDescription": {
+    "message": "Auswahl mit der zuletzt verwendeten Sprache übersetzen/umformulieren"
+  },
+  "popupNoKeyTitle": {
+    "message": "Kein API-Schlüssel eingerichtet"
+  },
+  "popupNoKeyBody": {
+    "message": "Öffnen Sie die Einstellungen und fügen Sie einen API-Schlüssel für den gewählten Anbieter hinzu."
+  },
+  "popupHowTo": {
+    "message": "Markieren Sie Text auf einer Seite und klicken Sie mit der rechten Maustaste, um ihn zu übersetzen oder umzuformulieren."
+  },
+  "popupGoToSettings": {
+    "message": "Zu den Einstellungen"
+  },
+  "popupShortcut": {
+    "message": "Tastenkürzel: $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutLanguage": {
+    "message": "Verwendet die zuletzt gewählte Sprache: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutNone": {
+    "message": "Es ist kein Tastenkürzel festgelegt."
+  },
+  "popupChangeShortcut": {
+    "message": "Tastenkürzel ändern"
+  },
+  "popupRephraseLanguage": {
+    "message": "Englisch (umformulieren)"
+  },
+  "optPageTitle": {
+    "message": "Phravexa-Einstellungen"
+  },
+  "optProviderSection": {
+    "message": "KI-Anbieter"
+  },
+  "optProviderLabel": {
+    "message": "Aktiver Anbieter"
+  },
+  "optApiKeyLabel": {
+    "message": "API-Schlüssel"
+  },
+  "optApiKeyPlaceholder": {
+    "message": "API-Schlüssel eingeben"
+  },
+  "optHowToGetKey": {
+    "message": "So erhalten Sie einen API-Schlüssel:"
+  },
+  "optInstructionsOpenai": {
+    "message": "Anleitung für OpenAI"
+  },
+  "optInstructionsAnthropic": {
+    "message": "Anleitung für Anthropic (Claude)"
+  },
+  "optInstructionsDeepseek": {
+    "message": "Anleitung für DeepSeek"
+  },
+  "optKeyPrivacy": {
+    "message": "Ihr Schlüssel wird nur auf diesem Gerät gespeichert und nur an den gewählten Anbieter gesendet."
+  },
+  "optModelLabel": {
+    "message": "Modell (optional)"
+  },
+  "optModelPlaceholder": {
+    "message": "Leer lassen für die Standardeinstellung"
+  },
+  "optModelDefault": {
+    "message": "Standard:"
+  },
+  "optModelHint": {
+    "message": "Nur ändern, wenn Ihr Anbieter das Standardmodell eingestellt hat oder Sie ein anderes Modell bevorzugen."
+  },
+  "optInstructionsSection": {
+    "message": "Besondere Anweisungen"
+  },
+  "optTonePlaceholder": {
+    "message": "z. B. professionell, höflich, aber freundlich"
+  },
+  "optLanguagesSection": {
+    "message": "Übersetzungssprachen"
+  },
+  "optAddLanguageLabel": {
+    "message": "Sprache hinzufügen"
+  },
+  "optAddLanguagePlaceholder": {
+    "message": "z. B. Spanish oder Spanisch"
+  },
+  "optAddButton": {
+    "message": "Hinzufügen"
+  },
+  "optRemoveLanguage": {
+    "message": "$LANGUAGE$ entfernen",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "optSave": {
+    "message": "Einstellungen speichern"
+  },
+  "optSaved": {
+    "message": "Einstellungen gespeichert."
+  },
+  "optSaveFailed": {
+    "message": "Einstellungen konnten nicht gespeichert werden: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "loadingDefault": {
+    "message": "Wird übersetzt"
+  },
+  "loadingRephrasing": {
+    "message": "Wird umformuliert"
+  },
+  "loadingTranslating": {
+    "message": "Übersetzung in: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupCopied": {
+    "message": "In die Zwischenablage kopiert"
+  },
+  "popupReplaced": {
+    "message": "Text ersetzt (auch kopiert)"
+  },
+  "popupTruncatedSuffix": {
+    "message": "(möglicherweise unvollständig)"
+  },
+  "popupCopyOriginal": {
+    "message": "Original kopieren"
+  },
+  "popupCopyOriginalHint": {
+    "message": "Den markierten Text vor der Änderung kopieren"
+  },
+  "popupOriginalCopied": {
+    "message": "Original kopiert"
+  },
+  "popupOriginalCopyFailed": {
+    "message": "Kopieren fehlgeschlagen"
+  },
+  "notifyTranslated": {
+    "message": "Text übersetzt und in die Zwischenablage kopiert"
+  },
+  "notifyRephrased": {
+    "message": "Text umformuliert und in die Zwischenablage kopiert"
+  },
+  "notifyTranslatedReplaced": {
+    "message": "Text übersetzt, ersetzt und in die Zwischenablage kopiert"
+  },
+  "notifyRephrasedReplaced": {
+    "message": "Text umformuliert, ersetzt und in die Zwischenablage kopiert"
+  },
+  "notifyTruncated": {
+    "message": "Das Ergebnis ist möglicherweise unvollständig."
+  },
+  "providerGeneric": {
+    "message": "Der KI-Anbieter"
+  },
+  "errUnsupportedProviderTitle": {
+    "message": "Nicht unterstützter Anbieter"
+  },
+  "errUnsupportedProvider": {
+    "message": "Der Anbieter „$PROVIDER$“ wird nicht unterstützt. Wählen Sie in den Einstellungen OpenAI, Anthropic oder DeepSeek.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadResponseTitle": {
+    "message": "Unerwartete Antwort"
+  },
+  "errBadResponse": {
+    "message": "Der KI-Anbieter hat eine unlesbare Antwort zurückgegeben. Bitte versuchen Sie es erneut."
+  },
+  "errBadResponseFrom": {
+    "message": "$PROVIDER$ hat eine unlesbare Antwort zurückgegeben. Bitte versuchen Sie es erneut.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRefusedTitle": {
+    "message": "Anfrage abgelehnt"
+  },
+  "errRefused": {
+    "message": "Der KI-Anbieter hat die Verarbeitung dieses Texts abgelehnt."
+  },
+  "errEmptyTitle": {
+    "message": "Leeres Ergebnis"
+  },
+  "errEmpty": {
+    "message": "Der KI-Anbieter hat ein leeres Ergebnis zurückgegeben. Bitte versuchen Sie es erneut."
+  },
+  "errAuthTitle": {
+    "message": "Ungültiger API-Schlüssel"
+  },
+  "errAuth": {
+    "message": "$PROVIDER$ hat Ihren API-Schlüssel abgelehnt. Bitte prüfen Sie ihn in den Phravexa-Einstellungen.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errQuotaTitle": {
+    "message": "Kein Guthaben"
+  },
+  "errQuota": {
+    "message": "$PROVIDER$ meldet, dass Ihr Konto kein Guthaben oder Kontingent mehr hat. Laden Sie beim Anbieter Guthaben auf und versuchen Sie es erneut.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRateLimitTitle": {
+    "message": "Anfragelimit"
+  },
+  "errRateLimit": {
+    "message": "$PROVIDER$ begrenzt die Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelTitle": {
+    "message": "Modell nicht verfügbar"
+  },
+  "errModel": {
+    "message": "Das gewählte Modell ist für Ihr Konto nicht verfügbar$DETAIL$. Legen Sie in den Phravexa-Einstellungen ein anderes Modell fest.",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadRequestTitle": {
+    "message": "Anfrage zurückgewiesen"
+  },
+  "errBadRequest": {
+    "message": "$PROVIDER$ hat die Anfrage zurückgewiesen$DETAIL$.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errServerTitle": {
+    "message": "Anbieter nicht erreichbar"
+  },
+  "errServer": {
+    "message": "$PROVIDER$ ist vorübergehend nicht erreichbar (HTTP $STATUS$). Bitte versuchen Sie es in Kürze erneut.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "status": {
+        "content": "$2"
+      }
+    }
+  },
+  "errHttpTitle": {
+    "message": "Übersetzungsfehler"
+  },
+  "errHttp": {
+    "message": "Die Anfrage ist mit HTTP $STATUS$ fehlgeschlagen$DETAIL$.",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errTimeoutTitle": {
+    "message": "Zeitüberschreitung"
+  },
+  "errTimeout": {
+    "message": "Der KI-Anbieter hat nicht rechtzeitig geantwortet. Bitte versuchen Sie es erneut."
+  },
+  "errNetworkTitle": {
+    "message": "Netzwerkfehler"
+  },
+  "errNetwork": {
+    "message": "Der KI-Anbieter ist nicht erreichbar. Bitte prüfen Sie Ihre Internetverbindung."
+  },
+  "errPasswordTitle": {
+    "message": "Passwortfeld"
+  },
+  "errPassword": {
+    "message": "Phravexa liest oder ersetzt niemals Text in Passwortfeldern."
+  },
+  "errNoSelectionTitle": {
+    "message": "Kein Text markiert"
+  },
+  "errNoSelection": {
+    "message": "Markieren Sie zuerst Text, klicken Sie dann mit der rechten Maustaste und wählen Sie eine Sprache, oder drücken Sie das Phravexa-Tastenkürzel."
+  },
+  "errTooLongTitle": {
+    "message": "Auswahl zu lang"
+  },
+  "errTooLong": {
+    "message": "Bitte markieren Sie weniger Text (bis etwa $COUNT$ Zeichen).",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errSetupTitle": {
+    "message": "Einrichtung erforderlich"
+  },
+  "errSetup": {
+    "message": "Fügen Sie Ihren KI-Anbieter und API-Schlüssel in den Phravexa-Einstellungen hinzu (klicken Sie auf das Erweiterungssymbol)."
+  },
+  "errClipboardTitle": {
+    "message": "Fehler in der Zwischenablage"
+  },
+  "errClipboard": {
+    "message": "Das Ergebnis konnte nicht in die Zwischenablage kopiert werden. Bitte versuchen Sie es erneut."
+  },
+  "errUnexpectedTitle": {
+    "message": "Unerwarteter Fehler"
+  },
+  "errUnexpected": {
+    "message": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  }
+}

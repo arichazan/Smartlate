@@ -1,0 +1,356 @@
+{
+  "extDescription": {
+    "message": "Traduce y mejora al instante el texto de cualquier cuadro de texto. Añade idiomas sin límite y adapta las instrucciones a tu estilo."
+  },
+  "commandDescription": {
+    "message": "Traducir/reformular la selección con el último idioma usado"
+  },
+  "popupNoKeyTitle": {
+    "message": "No hay ninguna clave de API configurada"
+  },
+  "popupNoKeyBody": {
+    "message": "Ve a Configuración y añade una clave de API para el proveedor que hayas elegido."
+  },
+  "popupHowTo": {
+    "message": "Selecciona texto en una página y haz clic con el botón derecho para traducirlo o reformularlo."
+  },
+  "popupGoToSettings": {
+    "message": "Ir a Configuración"
+  },
+  "popupShortcut": {
+    "message": "Atajo: $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutLanguage": {
+    "message": "Usa el último idioma que elegiste: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupShortcutNone": {
+    "message": "No hay ningún atajo de teclado configurado."
+  },
+  "popupChangeShortcut": {
+    "message": "Cambiar atajo"
+  },
+  "popupRephraseLanguage": {
+    "message": "Inglés (reformular)"
+  },
+  "optPageTitle": {
+    "message": "Configuración de Phravexa"
+  },
+  "optProviderSection": {
+    "message": "Proveedor de IA"
+  },
+  "optProviderLabel": {
+    "message": "Proveedor activo"
+  },
+  "optApiKeyLabel": {
+    "message": "Clave de API"
+  },
+  "optApiKeyPlaceholder": {
+    "message": "Introduce tu clave de API"
+  },
+  "optHowToGetKey": {
+    "message": "Cómo conseguir una clave de API:"
+  },
+  "optInstructionsOpenai": {
+    "message": "Instrucciones para OpenAI"
+  },
+  "optInstructionsAnthropic": {
+    "message": "Instrucciones para Anthropic (Claude)"
+  },
+  "optInstructionsDeepseek": {
+    "message": "Instrucciones para DeepSeek"
+  },
+  "optKeyPrivacy": {
+    "message": "Tu clave se guarda solo en este dispositivo y solo se envía al proveedor que elijas."
+  },
+  "optModelLabel": {
+    "message": "Modelo (opcional)"
+  },
+  "optModelPlaceholder": {
+    "message": "Déjalo vacío para usar el predeterminado"
+  },
+  "optModelDefault": {
+    "message": "Predeterminado:"
+  },
+  "optModelHint": {
+    "message": "Cámbialo solo si tu proveedor ha retirado el modelo predeterminado o prefieres otro."
+  },
+  "optInstructionsSection": {
+    "message": "Instrucciones especiales"
+  },
+  "optTonePlaceholder": {
+    "message": "p. ej., profesional, educado pero cercano"
+  },
+  "optLanguagesSection": {
+    "message": "Idiomas de traducción"
+  },
+  "optAddLanguageLabel": {
+    "message": "Añadir idioma"
+  },
+  "optAddLanguagePlaceholder": {
+    "message": "p. ej., Spanish o Español"
+  },
+  "optAddButton": {
+    "message": "Añadir"
+  },
+  "optRemoveLanguage": {
+    "message": "Quitar $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "optSave": {
+    "message": "Guardar configuración"
+  },
+  "optSaved": {
+    "message": "Configuración guardada."
+  },
+  "optSaveFailed": {
+    "message": "No se pudo guardar la configuración: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "loadingDefault": {
+    "message": "Traduciendo"
+  },
+  "loadingRephrasing": {
+    "message": "Reformulando"
+  },
+  "loadingTranslating": {
+    "message": "Traduciendo a: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupCopied": {
+    "message": "Copiado al portapapeles"
+  },
+  "popupReplaced": {
+    "message": "Texto sustituido (también copiado)"
+  },
+  "popupTruncatedSuffix": {
+    "message": "(puede estar incompleto)"
+  },
+  "popupCopyOriginal": {
+    "message": "Copiar original"
+  },
+  "popupCopyOriginalHint": {
+    "message": "Copia el texto que seleccionaste antes de cambiarlo"
+  },
+  "popupOriginalCopied": {
+    "message": "Original copiado"
+  },
+  "popupOriginalCopyFailed": {
+    "message": "No se pudo copiar"
+  },
+  "notifyTranslated": {
+    "message": "Texto traducido y copiado al portapapeles"
+  },
+  "notifyRephrased": {
+    "message": "Texto reformulado y copiado al portapapeles"
+  },
+  "notifyTranslatedReplaced": {
+    "message": "Texto traducido, sustituido y copiado al portapapeles"
+  },
+  "notifyRephrasedReplaced": {
+    "message": "Texto reformulado, sustituido y copiado al portapapeles"
+  },
+  "notifyTruncated": {
+    "message": "Puede que el resultado esté incompleto."
+  },
+  "providerGeneric": {
+    "message": "El proveedor de IA"
+  },
+  "errUnsupportedProviderTitle": {
+    "message": "Proveedor no compatible"
+  },
+  "errUnsupportedProvider": {
+    "message": "El proveedor '$PROVIDER$' no es compatible. Elige OpenAI, Anthropic o DeepSeek en la configuración.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadResponseTitle": {
+    "message": "Respuesta inesperada"
+  },
+  "errBadResponse": {
+    "message": "El proveedor de IA ha devuelto una respuesta ilegible. Inténtalo de nuevo."
+  },
+  "errBadResponseFrom": {
+    "message": "$PROVIDER$ ha devuelto una respuesta ilegible. Inténtalo de nuevo.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRefusedTitle": {
+    "message": "Solicitud rechazada"
+  },
+  "errRefused": {
+    "message": "El proveedor de IA se ha negado a procesar este texto."
+  },
+  "errEmptyTitle": {
+    "message": "Resultado vacío"
+  },
+  "errEmpty": {
+    "message": "El proveedor de IA ha devuelto un resultado vacío. Inténtalo de nuevo."
+  },
+  "errAuthTitle": {
+    "message": "Clave de API no válida"
+  },
+  "errAuth": {
+    "message": "$PROVIDER$ ha rechazado tu clave de API. Revísala en la configuración de Phravexa.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errQuotaTitle": {
+    "message": "Sin saldo"
+  },
+  "errQuota": {
+    "message": "$PROVIDER$ indica que tu cuenta no tiene saldo ni cuota disponible. Añade saldo en el proveedor e inténtalo de nuevo.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRateLimitTitle": {
+    "message": "Límite de solicitudes"
+  },
+  "errRateLimit": {
+    "message": "$PROVIDER$ está limitando las solicitudes. Espera un momento e inténtalo de nuevo.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelTitle": {
+    "message": "Modelo no disponible"
+  },
+  "errModel": {
+    "message": "El modelo seleccionado no está disponible para tu cuenta$DETAIL$. Elige otro modelo en la configuración de Phravexa.",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errBadRequestTitle": {
+    "message": "Solicitud rechazada"
+  },
+  "errBadRequest": {
+    "message": "$PROVIDER$ ha rechazado la solicitud$DETAIL$.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errServerTitle": {
+    "message": "Proveedor no disponible"
+  },
+  "errServer": {
+    "message": "$PROVIDER$ no está disponible temporalmente (HTTP $STATUS$). Inténtalo de nuevo en unos minutos.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      },
+      "status": {
+        "content": "$2"
+      }
+    }
+  },
+  "errHttpTitle": {
+    "message": "Error de traducción"
+  },
+  "errHttp": {
+    "message": "La solicitud ha fallado con HTTP $STATUS$$DETAIL$.",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errTimeoutTitle": {
+    "message": "Tiempo de espera agotado"
+  },
+  "errTimeout": {
+    "message": "El proveedor de IA no ha respondido a tiempo. Inténtalo de nuevo."
+  },
+  "errNetworkTitle": {
+    "message": "Error de red"
+  },
+  "errNetwork": {
+    "message": "No se ha podido conectar con el proveedor de IA. Comprueba tu conexión a internet."
+  },
+  "errPasswordTitle": {
+    "message": "Campo de contraseña"
+  },
+  "errPassword": {
+    "message": "Phravexa nunca lee ni sustituye el texto de los campos de contraseña."
+  },
+  "errNoSelectionTitle": {
+    "message": "No hay texto seleccionado"
+  },
+  "errNoSelection": {
+    "message": "Primero selecciona texto y luego haz clic con el botón derecho y elige un idioma, o pulsa el atajo de Phravexa."
+  },
+  "errTooLongTitle": {
+    "message": "Selección demasiado larga"
+  },
+  "errTooLong": {
+    "message": "Selecciona menos texto (hasta unos $COUNT$ caracteres).",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errSetupTitle": {
+    "message": "Configuración necesaria"
+  },
+  "errSetup": {
+    "message": "Añade tu proveedor de IA y tu clave de API en la configuración de Phravexa (haz clic en el icono de la extensión)."
+  },
+  "errClipboardTitle": {
+    "message": "Error del portapapeles"
+  },
+  "errClipboard": {
+    "message": "No se ha podido copiar el resultado al portapapeles. Inténtalo de nuevo."
+  },
+  "errUnexpectedTitle": {
+    "message": "Error inesperado"
+  },
+  "errUnexpected": {
+    "message": "Algo ha salido mal. Inténtalo de nuevo."
+  }
+}
