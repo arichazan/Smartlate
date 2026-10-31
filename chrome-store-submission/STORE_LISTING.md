@@ -1,91 +1,68 @@
-# Chrome Web Store Listing Content
+# Chrome Web Store Listing: Smartlate
 
-## Extension Name
-AI Translate & Rephrase - Phravexa
+Copy-paste source for the Chrome Web Store Developer Dashboard (Store listing tab).
+The plain-text description below is also in `store-description.txt`.
 
-## Short Description (132 characters max)
-Instantly translate and refine text in any text box. Add unlimited languages and customize prompts to match your tone and style.
+## Name (from manifest, 75 characters max)
+Smartlate – AI Translate & Rephrase
 
-(Characters: 128/132)
+## Summary / short description (from manifest, 132 characters max)
+Right-click any selected text to translate or rephrase it with your own OpenAI, Anthropic or DeepSeek key. Formatting is kept.
 
-## Detailed Description
+(126/132 characters)
 
-Instantly translate and improve your writing in any text box. Make your text clearer, more natural, and better suited to your tone. Add as many languages as you like and customize prompts to match your writing style.
+## Detailed description
 
-Transform your text with AI-powered translation and rephrasing. Phravexa makes it effortless to translate selected text into any language while applying the perfect tone for your audience.
+```
+Select text on any page, right-click and pick a language. Smartlate translates or rephrases it with your own AI key and puts the result on your clipboard, formatting included.
 
-**Key Features:**
+HOW IT WORKS
+1. Select text on a web page or inside a text box.
+2. Right-click and choose a language from the menu.
+3. Smartlate copies the result to your clipboard and shows a short confirmation on the page.
+4. Paste it wherever you need it.
 
-🌍 **Multi-Language Translation**
-Translate text to any language you configure - Spanish, French, German, Japanese, and more. Simply select text, right-click, and choose your target language.
+Choosing "English" rephrases the text in your chosen tone. Choosing any other language translates it and applies the same tone.
 
-✨ **AI-Powered Rephrasing**
-Refine your writing with customizable tones:
-- Professional for business communications
-- Casual for friendly messages
-- Concise for clear, brief content
-- And many more styles
+FEATURES
+- Any language: add as many target languages as you like. Each one appears directly in the right-click menu.
+- Your tone: write your own instructions, such as "professional but friendly" or "short and casual", and they are applied to every result.
+- Formatting kept: when you select text on a page, headings, bold, italics, links, lists and tables are kept, so the result pastes cleanly into Gmail, Google Docs, Word or Slack. Text from text boxes keeps its line breaks and indentation.
+- Choose your AI provider: OpenAI, Anthropic or DeepSeek. Smartlate uses a fast default model for each, and you can set a different model in settings.
+- Clear errors: an invalid key, empty account credit, rate limits and network problems are explained on the page, so you know what to fix.
 
-🤖 **Multiple AI Providers**
-Choose your preferred AI service:
-- OpenAI (GPT models)
-- Anthropic (Claude)
-- DeepSeek
+PRIVACY
+- No account, no Smartlate servers, no analytics.
+- Your API key is stored only on your device.
+- Selected text is sent only when you click a Smartlate menu item, and only to the provider you chose.
 
-📝 **Keeps Your Formatting**
-Bold, italics, links, headings, lists, tables and line breaks are preserved - paste the translation straight into Gmail, Google Docs, Word or Slack and it looks just like the original.
+BRING YOUR OWN KEY
+Smartlate has no subscription. You need an API key from OpenAI, Anthropic or DeepSeek and you pay that provider directly for what you use, which is usually a few cents a month for everyday translation.
 
-⚡ **One-Click Operation**
-1. Select any text on any webpage
-2. Right-click and choose your language
-3. Get perfectly translated and rephrased text
-4. Automatically copied to your clipboard
-
-🔒 **Privacy First**
-- Your API keys are stored securely in local Chrome storage
-- No data sent to any servers except your chosen AI provider
-- Only accesses text you explicitly select
-
-**Perfect For:**
-- International communication
-- Content creation
-- Professional writing
-- Language learning
-- Email composition
-- Social media posts
-
-**How It Works:**
-
-For English: Rephrases your text with your chosen tone (professional, casual, concise, etc.)
-
-For Other Languages: Translates to the target language AND applies your preferred tone for natural, contextually appropriate text.
-
-**Setup in Minutes:**
-1. Install the extension
-2. Click the extension icon and go to options
-3. Select your AI provider and enter your API key
-4. Add your preferred languages
-5. Choose your default tone
-6. Start translating and rephrasing!
-
-No subscriptions. No monthly fees. Just bring your own API key from OpenAI, Anthropic, or DeepSeek.
+SETUP
+1. Install Smartlate. The settings page opens automatically.
+2. Choose your provider and paste your API key.
+3. Adjust the languages and tone if you like, then save.
+```
 
 ## Category
-Productivity
+Productivity (Workflow & Planning) or Tools. Keep the category the live listing already uses.
 
 ## Language
 English
 
-## Tags/Keywords (Suggested)
-- translation
-- translator
-- AI
-- rephrasing
-- language
-- productivity
-- writing
-- OpenAI
-- Claude
-- GPT
-- paraphrasing
-- text improvement
+## URLs
+- Homepage: https://arichazan.github.io/apps/smartlate.html
+- Support: mailto:support@itbcn.com (or the homepage)
+- Privacy policy: https://github.com/arichazan/Smartlate/blob/main/PRIVACY.md
+
+## Graphics in `chrome-store-submission/`
+- Small promo tile 440x280: `440x280.png`
+- Large promo tile 920x680: `920x680.png`
+- Marquee 1400x560: `1400x560.png`
+- Screenshots (1280x800): `screenshots/`
+
+The promo PNGs are rendered from `promo-tile-*.html` with Playwright (see PROMOTIONAL_IMAGES_GUIDE.md).
+
+## Search keywords (for reference; the store has no keyword field)
+translate, translator, rephrase, paraphrase, rewrite, tone, writing assistant, OpenAI, Anthropic, DeepSeek, bring your own key
