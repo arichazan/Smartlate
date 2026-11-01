@@ -9,8 +9,9 @@ No new permissions or host permissions, so existing users get the update silentl
 
 ## Steps
 
-1. **Push the privacy policy first.** `PRIVACY.md` now lists the `scripting` permission. Push it so
-   https://arichazan.github.io/Phravexa/PRIVACY shows the new version before review.
+1. **Check the privacy policy is live.** https://arichazan.github.io/Phravexa/PRIVACY should load and
+   say the result is written back into the text box or editor. Make sure the store listing uses this
+   Phravexa URL; the old Smartlate URL no longer works since the repo rename.
 2. Open https://chrome.google.com/webstore/devconsole and select **AI Translate & Rephrase - Phravexa**.
 3. **Package** tab → **Upload new package** → `dist/phravexa-1.2.0.zip` (build it with `./extension/build.sh`, or download the `phravexa-store-zip` CI artifact).
    The version must read 1.2.0.
