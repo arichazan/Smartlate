@@ -16,6 +16,12 @@ Right-click any selected text to translate or rephrase it with your own OpenAI, 
 ```
 Select text on any page, right-click and pick a language. Phravexa translates or rephrases it with your own AI key and puts the result on your clipboard, formatting included.
 
+NEW IN 1.2
+- Replaces text in place: in a text box or email editor, the result replaces your selection. No more pasting. Undo with Ctrl/Cmd+Z.
+- Anthropic (Claude) works again, with up-to-date default models for every provider and an optional model setting.
+- Your API key is now stored only on this device. Existing keys are moved automatically, so there is nothing to re-enter.
+- Clearer error messages for invalid keys, empty account credit, rate limits and network problems.
+
 HOW IT WORKS
 1. Select text on a web page or inside a text box.
 2. Right-click and choose a language from the menu.
